@@ -18,17 +18,27 @@ class Turtle:
 
     def __add__(self,xy_tuple):
         """Add xy_tuple (i.e a tuple containing x and y coordinate values to be added to) the turtle object"""
+        if not (isinstance(xy_tuple, tuple) or isinstance(xy_tuple, list)) or len(xy_tuple) <2:
+            raise ValueError("Expected a tuple or list of size 2")
         return Turtle(self.canvas, self.x + xy_tuple[0], self.y + xy_tuple[1])
+    
     def __sub__(self,xy_tuple):
         """Subtract xy_tuple (i.e a tuple containing x and y coordinate values to be added to) the turtle object"""
+        if not (isinstance(xy_tuple, tuple) or isinstance(xy_tuple, list)) or len(xy_tuple) <2:
+            raise ValueError("Expected a tuple or list of size 2")
         return Turtle(self.canvas, self.x - xy_tuple[0], self.y - xy_tuple[1])
+    
     def __iadd__(self,xy_tuple):
         """Assignment addition of xy_tuple (i.e a tuple containing x and y coordinate values to be added to) the turtle object"""
+        if not (isinstance(xy_tuple, tuple) or isinstance(xy_tuple, list)) or len(xy_tuple) <2:
+            raise ValueError("Expected a tuple or list of size 2")
         self = self + xy_tuple
         return self
 
     def __isub__(self,xy_tuple):
         """Assignment subtraction xy_tuple (i.e a tuple containing x and y coordinate values to be added to) the turtle object"""
+        if not (isinstance(xy_tuple, tuple) or isinstance(xy_tuple, list)) or len(xy_tuple) <2:
+            raise ValueError("Expected a tuple or list of size 2")
         self = self - xy_tuple
         return self
 

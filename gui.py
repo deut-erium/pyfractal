@@ -1,7 +1,10 @@
 """Main Class for handling GUI of the application"""
+
+import io
 from tkinter import Tk, Frame, Canvas, Scrollbar, Menu
 from tkinter import HORIZONTAL, VERTICAL, BOTH, TOP, LEFT, RIGHT, X, Y, BOTTOM
-
+from PIL import Image
+import canvasvg
 
 def todo():
     """ function substituted to do"""
@@ -20,12 +23,16 @@ class GUI():
         # set minimum size to which the window can be reduced
         self.window.minsize(min_width, min_height)
         self.canvas = None
-        self.frm_canvas = None
-        self.frm_parameters = None
-        self.menubar = None
-        self.helpmenu = None
-        self.filemenu = None
-        self.editmenu = None
+        self.frames = {
+            "parameters": None,
+            "canvas": None
+        }
+        self.menubar = {
+            "menubar": None,
+            "helpmenu" : None,
+            "filemenu" : None,
+            "editmenu" : None
+        }
         self.init_canvas_frame()
         self.init_parameters_frame()
         self.init_menu_bar()
@@ -36,32 +43,32 @@ class GUI():
         Creates and initializes a Frame for the canvas
         max_width, max_height determine the maximum scrollable area
         """
-        self.frm_canvas = Frame(master=self.window, width=400, height=400)
+        self.frames["canvas"] = Frame(master=self.window, width=400, height=400)
         self.canvas = Canvas(
-            master=self.frm_canvas,
+            master=self.frames["canvas"],
             scrollregion=(0, 0, max_width, max_height))
-        h_scrl_bar = Scrollbar(self.frm_canvas, orient=HORIZONTAL)
+        h_scrl_bar = Scrollbar(self.frames["canvas"], orient=HORIZONTAL)
         h_scrl_bar.pack(side=BOTTOM, fill=X)
         h_scrl_bar.config(command=self.canvas.xview)
-        v_scrl_bar = Scrollbar(self.frm_canvas, orient=VERTICAL)
+        v_scrl_bar = Scrollbar(self.frames["canvas"], orient=VERTICAL)
         v_scrl_bar.pack(side=RIGHT, fill=Y)
         v_scrl_bar.config(command=self.canvas.yview)
         self.canvas.config(
             xscrollcommand=h_scrl_bar.set,
             yscrollcommand=v_scrl_bar.set)
         self.canvas.pack(side=LEFT, expand=True, fill=BOTH)
-        self.frm_canvas.pack(anchor="nw", side=TOP, expand=True, fill=BOTH)
+        self.frames["canvas"].pack(anchor="nw", side=TOP, expand=True, fill=BOTH)
 
     def init_parameters_frame(self, height=200, width=400):
         """
             Initializes frame for parameters/buttons
         """
-        self.frm_parameters = Frame(
+        self.frames["parameters"] = Frame(
             master=self.window,
             width=width,
             height=height,
             bg="pink")
-        self.frm_parameters.pack(
+        self.frames["parameters"].pack(
             anchor="ne",
             side=BOTTOM,
             expand=False,
@@ -71,47 +78,67 @@ class GUI():
         """
         initializes the menubar
         """
-        self.menubar = Menu(self.window)
+        self.menubar["menubar"] = Menu(self.window)
         self.init_filemenu()
         self.init_editmenu()
         self.init_helpmenu()
-        self.window.config(menu=self.menubar)
+        self.window.config(menu=self.menubar["menubar"])
 
     def init_filemenu(self):
         """
         initializes filemenu in menubar
         """
-        self.filemenu = Menu(self.menubar, tearoff=0)
-        self.filemenu.add_command(label="New", command=todo)
-        self.filemenu.add_command(label="Open", command=todo)
-        self.filemenu.add_command(label="Save", command=todo)
-        self.filemenu.add_command(label="Save as...", command=todo)
-        self.filemenu.add_command(label="Close", command=todo)
-        self.filemenu.add_separator()
-        self.menubar.add_cascade(label="File", menu=self.filemenu)
+        self.menubar["filemenu"] = Menu(self.menubar["menubar"], tearoff=0)
+        self.menubar["filemenu"].add_command(label="New", command=todo)
+        self.menubar["filemenu"].add_command(label="Open", command=todo)
+        self.menubar["filemenu"].add_command(label="Save", command=todo)
+        self.menubar["filemenu"].add_command(label="Save as...", command=todo)
+        self.menubar["filemenu"].add_command(label="Close", command=todo)
+        self.menubar["filemenu"].add_separator()
+        self.menubar["menubar"].add_cascade(label="File", menu=self.menubar["filemenu"])
 
     def init_editmenu(self):
         """
         initializes editmenu in menubar
         """
-        self.editmenu = Menu(self.menubar, tearoff=0)
-        self.editmenu.add_command(label="Undo", command=todo)
-        self.editmenu.add_separator()
-        self.editmenu.add_command(label="Cut", command=todo)
-        self.editmenu.add_command(label="Copy", command=todo)
-        self.editmenu.add_command(label="Paste", command=todo)
-        self.editmenu.add_command(label="Delete", command=todo)
-        self.editmenu.add_command(label="Select All", command=todo)
-        self.menubar.add_cascade(label="Edit", menu=self.editmenu)
+        self.menubar["editmenu"] = Menu(self.menubar["menubar"], tearoff=0)
+        self.menubar["editmenu"].add_command(label="Undo", command=todo)
+        self.menubar["editmenu"].add_separator()
+        self.menubar["editmenu"].add_command(label="Cut", command=todo)
+        self.menubar["editmenu"].add_command(label="Copy", command=todo)
+        self.menubar["editmenu"].add_command(label="Paste", command=todo)
+        self.menubar["editmenu"].add_command(label="Delete", command=todo)
+        self.menubar["editmenu"].add_command(label="Select All", command=todo)
+        self.menubar["menubar"].add_cascade(label="Edit", menu=self.menubar["editmenu"])
 
     def init_helpmenu(self):
         """
         initializes helpmenu in menubar
         """
-        self.helpmenu = Menu(self.menubar, tearoff=0)
-        self.helpmenu.add_command(label="Help Index", command=todo)
-        self.helpmenu.add_command(label="About...", command=todo)
-        self.menubar.add_cascade(label="Help", menu=self.helpmenu)
+        self.menubar["helpmenu"] = Menu(self.menubar["menubar"], tearoff=0)
+        self.menubar["helpmenu"].add_command(label="Help Index", command=todo)
+        self.menubar["helpmenu"].add_command(label="About...", command=todo)
+        self.menubar["menubar"].add_cascade(label="Help", menu=self.menubar["helpmenu"])
 
+    def save_canvas_svg(self, filename):
+        """
+        Save the canvas as an svg
+        """
+        canvasvg.saveall(filename+".svg", self.canvas)
+
+    def save_postscript(self, filename):
+        """
+        Save canvas as postscript
+        """
+        with open(filename+".eps", 'w') as savefile:
+            savefile.write(self.canvas.postscript())
+
+    def save_png(self, filename):
+        """
+        Save canvas as png
+        """
+        post_script = self.canvas.postscript().encode()
+        img = Image.open(io.BytesIO(post_script))
+        img.save(filename, format="PNG")
 
 A_ADV = GUI()

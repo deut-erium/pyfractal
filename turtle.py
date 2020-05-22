@@ -11,8 +11,10 @@ class Turtle:
 
     def __init__(self, canvas, x_coord=0, y_coord=0):
         """
-            Initialize a new turtle object on the canvas at the provided x and y coordinates
-            heading denotes the direction in which the turtle is heading in radians
+            Initialize a new turtle object on the canvas at the provided
+            x and y coordinates
+            heading denotes the direction in which the turtle is heading
+            specified in radians
             radians specifies whether the angle provided is in radians
             pendown indicates the drawing state of the turtle pen
         """
@@ -24,7 +26,9 @@ class Turtle:
         self.pendown = True
 
     def __str__(self):
-        """String representation containing x and y coordinate"""
+        """
+            String representation containing x and y coordinate
+        """
         return "x: {0}, y:{1}, angle:{2}, pendown:{3}".format(
             self.x, self.y, self.angle * 180 / math.pi, self.pendown)
 
@@ -84,7 +88,9 @@ class Turtle:
         self.angle = self.angle % (math.pi * 2)
 
     def forward(self, length):
-        """Move forward length units in angle direction"""
+        """
+            Move forward length units in angle direction
+        """
         x_move = math.cos(self.angle) * length
         y_move = math.sin(self.angle) * length
         if self.pendown:
@@ -93,13 +99,16 @@ class Turtle:
         self.x, self.y = self.x + x_move, self.y + y_move
 
     def backward(self, length):
-        """Move backwards length units without changing facing angle"""
+        """
+            Move backwards length units without changing facing angle
+        """
         self.forward(-length)
 
     def left(self, angle, radians=False):
         """
             Turn left by the angle specified
-            the angle specified is in radians if radians == True, degrees otherwise
+            the angle specified is in radians if radians == True,
+            degrees if radians == False
         """
         self.angle = self.angle + (angle if radians else angle * math.pi / 180)
         self.angle = self.angle % (math.pi * 2)
@@ -107,20 +116,28 @@ class Turtle:
     def right(self, angle, radians=False):
         """
             Turn right by the angle specified
-            the angle specified is in radians if radians == True, degrees otherwise
+            the angle specified is in radians if radians == True,
+            degrees if radians == False
         """
         self.left(-angle, radians)
 
     def set_pendown(self):
-        """Set the penstate to down i.e pendown = True"""
+        """
+            Set the penstate to down i.e pendown = True
+        """
         self.pendown = True
 
     def set_penup(self):
-        """Set the penstate to up i.e pendown = False"""
+        """
+            Set the penstate to up i.e pendown = False
+        """
         self.pendown = False
 
     def gen_arc(self, final_x, final_y, final_angle, radians=False):
-        """Draw an arc to final position making the heading angle final_angle """
+        """
+            Draw an arc to final position making the heading
+            angle final_angle
+        """
         euclidean_dist = math.sqrt(
             (self.x - final_x)**2 + (self.y - final_y)**2)
         fin_angle_rad = final_angle if radians else final_angle * math.pi / 180

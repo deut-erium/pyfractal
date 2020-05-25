@@ -15,8 +15,17 @@ class FastFractal():
         self.rules = rules
         self.start_point = start_point
         self.base_length = base_length
+        self.curve = []
 
-    def reflection(line, point):
+    def set_startpoint(self, point):
+        """
+        set the startpoint of curve to point
+        """
+        self.start_point = point
+
+# def resize_curve(self, factor):
+
+    def reflection(self, line, point):
         """
         find the reflection in line ax + by + c = 0 represented as (a,b,c)
         of point represented as (p,q)
@@ -46,7 +55,7 @@ class FastFractal():
         line = (a, b, c)
         return [self.reflection(line, point) for point in curve]
 
-    def rotate_scale(center, theta, scale, curve):
+    def rotate_scale(self, center, theta, scale, curve):
         """
         Rotate the curve (list of points (x,y)) by theta around the
         center (cx,cy) and scale the curve by a factor of scale
@@ -56,7 +65,7 @@ class FastFractal():
         for each (x,y) tuple in curve
         """
         c_x, c_y = center
-        return [[c_x +
+        return [(c_x +
                  (i -
                   c_x) *
                  scale *
@@ -72,15 +81,15 @@ class FastFractal():
                  (j -
                   c_y) *
                  scale *
-                 cos(theta)] for i, j in curve]
+                 cos(theta)) for i, j in curve]
 
-    def translate(center, curve):
+    def translate(self, center, curve):
         """
         translate the curve to the provided center
         """
         offset_x = center[0] - curve[0][0]  # offset wrt first point of curve
         offset_y = center[1] - curve[0][1]
-        return [[i + offset_x, j + offset_y] for i, j in curve]
+        return [(i + offset_x, j + offset_y) for i, j in curve]
 
     def reverse(self, p1, p2, curve):
         """
@@ -93,3 +102,50 @@ class FastFractal():
         c = ((x1**2 + y1**2) - (x2**2 + y2**2)) / 2
         line = (a, b, c)
         return [self.reflection(line, point) for point in curve[::-1]]
+
+    def form_base_curve(self, start_point=None):
+        """
+        Form the base curve from the initial rules and starting point
+
+        """
+        if start_point is None:
+            start_point = self.start_point
+        curve = [start_point]
+        for theta, scale_fac, _, _ in self.rules:
+            last_x, last_y = curve[-1]
+            curve.append((
+                last_x + self.base_length * scale_fac * cos(theta),
+                last_y + self.base_length * scale_fac * sin(theta)))
+        return curve
+
+    def fractal_curve(self, recursion_depth):
+        """
+        Form a recursive curve from rules of recursion_depth
+        """
+        if recursion_depth == 1:
+            return self.form_base_curve()
+        curve_prev_level = self.fractal_curve(recursion_depth - 1)
+        last_point = curve_prev_level[0]
+        curve = []
+        for theta, scale_fac, is_flipped, is_reversed in self.rules:
+            if is_flipped is None and is_reversed is None:
+                curve.append((
+                    last_point[0] + self.base_length * cos(theta),
+                    last_point[1] + self.base_length * sin(theta)))
+                last_point = curve[-1]
+                continue
+            sub_crv = self.rotate_scale(
+                last_point,
+                theta,
+                scale_fac,
+                self.translate(last_point, curve_prev_level))
+            if is_flipped:
+                sub_crv = self.flip(sub_crv[0], sub_crv[-1], sub_crv)
+                # flip the curve around the starting and end point
+            if is_reversed:
+                sub_crv = self.reverse(sub_crv[0], sub_crv[-1], sub_crv)
+                # reverse the curve around the starting and end point
+            curve = curve + sub_crv
+            last_point = sub_crv[-1]
+        return curve
+

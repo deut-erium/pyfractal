@@ -6,6 +6,7 @@ from tkinter import HORIZONTAL, VERTICAL, BOTH, TOP, LEFT, RIGHT, X, Y, BOTTOM
 from PIL import Image
 import canvasvg
 
+
 def todo():
     """ function substituted to do"""
     print("OK")
@@ -13,6 +14,7 @@ def todo():
 
 class GUI():
     """Class for handling GUI of application"""
+
     def __init__(self, min_height=600, min_width=600):
         """
         Initialize the main window of the application
@@ -29,9 +31,9 @@ class GUI():
         }
         self.menubar = {
             "menubar": None,
-            "helpmenu" : None,
-            "filemenu" : None,
-            "editmenu" : None
+            "helpmenu": None,
+            "filemenu": None,
+            "editmenu": None
         }
         self.init_canvas_frame()
         self.init_parameters_frame()
@@ -43,7 +45,8 @@ class GUI():
         Creates and initializes a Frame for the canvas
         max_width, max_height determine the maximum scrollable area
         """
-        self.frames["canvas"] = Frame(master=self.window, width=400, height=400)
+        self.frames["canvas"] = Frame(
+            master=self.window, width=400, height=400)
         self.canvas = Canvas(
             master=self.frames["canvas"],
             scrollregion=(0, 0, max_width, max_height))
@@ -57,7 +60,50 @@ class GUI():
             xscrollcommand=h_scrl_bar.set,
             yscrollcommand=v_scrl_bar.set)
         self.canvas.pack(side=LEFT, expand=True, fill=BOTH)
-        self.frames["canvas"].pack(anchor="nw", side=TOP, expand=True, fill=BOTH)
+        self.frames["canvas"].pack(
+            anchor="nw", side=TOP, expand=True, fill=BOTH)
+
+        self.canvas.bind("<ButtonPress-1>", self.move_start)
+        self.canvas.bind("<B1-Motion>", self.move_move)
+        self.canvas.bind("<Button-4>", self.linux_zoomer_plus)
+        self.canvas.bind("<Button-5>", self.linux_zoomer_minus)
+        self.canvas.bind("<MouseWheel>", self.windows_zoomer)  # windows scroll
+
+    def move_start(self, event):
+        """
+        Mark the coordinates to start moving
+        """
+        self.canvas.scan_mark(event.x, event.y)
+
+    def move_move(self, event):
+        """
+        move to dragged position
+        """
+        self.canvas.scan_dragto(event.x, event.y, gain=1)
+
+    def windows_zoomer(self, event):
+        """
+        Zoomer functionality for windows
+        """
+        if event.delta > 0:
+            self.canvas.scale("all", event.x, event.y, 1.1, 1.1)
+        elif event.delta < 0:
+            self.canvas.scale("all", event.x, event.y, 0.9, 0.9)
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+    def linux_zoomer_plus(self, event):
+        """
+        Zoom into functionality linux
+        """
+        self.canvas.scale("all", event.x, event.y, 1.1, 1.1)
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+    def linux_zoomer_minus(self, event):
+        """
+        Zoom out functionality linux
+        """
+        self.canvas.scale("all", event.x, event.y, 0.9, 0.9)
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def init_parameters_frame(self, height=200, width=400):
         """
@@ -95,7 +141,8 @@ class GUI():
         self.menubar["filemenu"].add_command(label="Save as...", command=todo)
         self.menubar["filemenu"].add_command(label="Close", command=todo)
         self.menubar["filemenu"].add_separator()
-        self.menubar["menubar"].add_cascade(label="File", menu=self.menubar["filemenu"])
+        self.menubar["menubar"].add_cascade(
+            label="File", menu=self.menubar["filemenu"])
 
     def init_editmenu(self):
         """
@@ -109,7 +156,8 @@ class GUI():
         self.menubar["editmenu"].add_command(label="Paste", command=todo)
         self.menubar["editmenu"].add_command(label="Delete", command=todo)
         self.menubar["editmenu"].add_command(label="Select All", command=todo)
-        self.menubar["menubar"].add_cascade(label="Edit", menu=self.menubar["editmenu"])
+        self.menubar["menubar"].add_cascade(
+            label="Edit", menu=self.menubar["editmenu"])
 
     def init_helpmenu(self):
         """
@@ -118,19 +166,20 @@ class GUI():
         self.menubar["helpmenu"] = Menu(self.menubar["menubar"], tearoff=0)
         self.menubar["helpmenu"].add_command(label="Help Index", command=todo)
         self.menubar["helpmenu"].add_command(label="About...", command=todo)
-        self.menubar["menubar"].add_cascade(label="Help", menu=self.menubar["helpmenu"])
+        self.menubar["menubar"].add_cascade(
+            label="Help", menu=self.menubar["helpmenu"])
 
     def save_canvas_svg(self, filename):
         """
         Save the canvas as an svg
         """
-        canvasvg.saveall(filename+".svg", self.canvas)
+        canvasvg.saveall(filename + ".svg", self.canvas)
 
     def save_postscript(self, filename):
         """
         Save canvas as postscript
         """
-        with open(filename+".eps", 'w') as savefile:
+        with open(filename + ".eps", 'w') as savefile:
             savefile.write(self.canvas.postscript())
 
     def save_png(self, filename):
@@ -140,5 +189,6 @@ class GUI():
         post_script = self.canvas.postscript().encode()
         img = Image.open(io.BytesIO(post_script))
         img.save(filename, format="PNG")
+
 
 A_ADV = GUI()

@@ -1,11 +1,14 @@
 """Main Class for handling GUI of the application"""
 
 import io
-from tkinter import Tk, Frame, Canvas, Scrollbar, Menu
+import math
+import os
+import re
+from tkinter import Tk, Frame, Canvas, Scrollbar, Menu, filedialog, Button
 from tkinter import HORIZONTAL, VERTICAL, BOTH, TOP, LEFT, RIGHT, X, Y, BOTTOM
 from PIL import Image
 import canvasvg
-
+from fastfractal import FastFractal
 
 def todo():
     """ function substituted to do"""
@@ -38,7 +41,6 @@ class GUI():
         self.init_canvas_frame()
         self.init_parameters_frame()
         self.init_menu_bar()
-        self.window.mainloop()
 
     def init_canvas_frame(self, max_width=1080, max_height=1920):
         """
@@ -61,7 +63,7 @@ class GUI():
             yscrollcommand=v_scrl_bar.set)
         self.canvas.pack(side=LEFT, expand=True, fill=BOTH)
         self.frames["canvas"].pack(
-            anchor="nw", side=TOP, expand=True, fill=BOTH)
+            anchor="nw", side=LEFT, expand=True, fill=BOTH)
 
         self.canvas.bind("<ButtonPress-1>", self.move_start)
         self.canvas.bind("<B1-Motion>", self.move_move)
@@ -105,7 +107,7 @@ class GUI():
         self.canvas.scale("all", event.x, event.y, 0.9, 0.9)
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
-    def init_parameters_frame(self, height=200, width=400):
+    def init_parameters_frame(self, height=400, width=300):
         """
             Initializes frame for parameters/buttons
         """
@@ -116,7 +118,7 @@ class GUI():
             bg="pink")
         self.frames["parameters"].pack(
             anchor="ne",
-            side=BOTTOM,
+            side=RIGHT,
             expand=False,
             fill=BOTH)
 
@@ -173,13 +175,13 @@ class GUI():
         """
         Save the canvas as an svg
         """
-        canvasvg.saveall(filename + ".svg", self.canvas)
+        canvasvg.saveall(filename, self.canvas)
 
     def save_postscript(self, filename):
         """
         Save canvas as postscript
         """
-        with open(filename + ".eps", 'w') as savefile:
+        with open(filename, 'w') as savefile:
             savefile.write(self.canvas.postscript())
 
     def save_png(self, filename):
@@ -191,4 +193,70 @@ class GUI():
         img.save(filename, format="PNG")
 
 
+class Parameters():
+    """
+    Class for holding the functionality and fields in the parameters frame of 
+    GUI class this class would contain different methods for interaction with
+    the canvas and general features desired in an application
+    """
+    def __init__(self, parent_class):
+        """
+        Initializing the class into the frame of parent i.e the frame in which
+        the elements would be placed
+        parent_class intended to access features of parent class
+        """
+        self.parent_class = parent_class
+        self.frame = parent_class.frames["parameters"]
+        self.buttons = {
+            "btn_save_as" : None
+        }
+        self.entries = {
+
+        }
+        self.init_saveas_button()
+
+    def init_saveas_button(self):
+        """
+        save_as button
+        """
+        def save():
+            """
+            function to invoke different save routines
+            """
+            file_name = filedialog.asksaveasfilename(
+                    filetypes=[
+                        ("Scalable Vector Graphics", "*.svg"),
+                        ("Postscript", "*.ps"),
+                        ("Portable Network Graphics", "*.png")
+                    ],
+                    initialdir = os.getcwd())
+            if file_name:
+                extension = re.search("\.[\w]+$",file_name)[0]
+                if extension == '.png':
+                    self.parent_class.save_png(file_name)
+                elif extension == ".ps":
+                    self.parent_class.save_postscript(file_name)
+                elif extension == ".svg":
+                    self.parent_class.save_canvas_svg(file_name)
+                else:
+                    raise TypeError("Unknown Filetype")
+
+        self.buttons["btn_save_as"] = Button(self.frame, text="Save As", command = save)
+        self.buttons["btn_save_as"].pack()
+        
+
+
+
+
 A_ADV = GUI()
+v = Parameters(A_ADV)
+rules = [(math.pi/2,1,False,True),(0,0.5773,True,True),(0,0.5773,False,False),(-2*math.pi/3,0.5773,False,False),(-math.pi/6,1,True,False)]
+start_point = (100,100)
+base_length = 10
+fractal = FastFractal(rules,start_point,base_length)
+rules = [(math.pi/2,1,False,True),(0,0.5773,True,True),(0,0.5773,False,False),(-2*math.pi/3,0.5773,False,False),(-math.pi/6,1,True,False)]
+start_point = (100,100)
+base_length = 10
+fractal = FastFractal(rules,start_point,base_length)
+A_ADV.canvas.create_line(fractal.fractal_curve(8))
+A_ADV.window.mainloop()

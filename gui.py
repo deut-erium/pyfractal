@@ -222,16 +222,16 @@ class Parameters():
         }
         self.entries = {
             "ent_recursion_depth": None,
-            "ent_side_length": None
+            "ent_base_length": None
         }
         self.labels = {
             "lbl_recursion_depth": None,
-            "lbl_side_length": None
+            "lbl_base_length": None
         }
         self.init_saveas_button()
         self.init_clear_canvas_button()
         self.init_recursion_depth_entry()
-        self.init_side_length_entry()
+        self.init_base_length_entry()
         self.init_draw_button()
 
     def init_saveas_button(self):
@@ -281,21 +281,52 @@ class Parameters():
         Entry field to specify recursion depth of the fractal
         from the user, entries fetched on executing draw
         """
-        self.entries["ent_recursion_depth"] = Entry(self.frame, width=10)
+        vcmd = (self.frame.register(self.validate_integer), '%P')
+        # input validation clarification
+        # https://stackoverflow.com/questions/4140437/interactively-validating-entry-widget-content-in-tkinter
+        self.entries["ent_recursion_depth"] = Entry(
+            self.frame, width=10,
+            validate='key', validatecommand=vcmd)
         self.labels["lbl_recursion_depth"] = Label(
             self.frame, text="Recursion Depth")
         self.entries["ent_recursion_depth"].pack(side=RIGHT)
         self.labels["lbl_recursion_depth"].pack(side=LEFT)
 
-    def init_side_length_entry(self):
+    def validate_integer(self, P):
+        """
+        Validate only if P is integer or null input
+        """
+        # P is str
+        if re.search(r"^[1-9]\d*$", P) or P == "":
+            return True
+        return False
+
+    def validate_float(self, P):
+        """
+        Validate if input is a valid floating point number
+        """
+        # may validate only '[+-].' which needs to be handled later
+        float_pattern = r"^[\+\-]?([0-9]*[.])?[0-9]*$"
+        if re.search(float_pattern, P) or P == "":
+            return True
+        return False
+
+    def init_base_length_entry(self):
         """
         Entry field to specify side length of base fractal curve
         """
-        self.entries["ent_side_length"] = Entry(self.frame, width=10)
-        self.labels["lbl_side_length"] = Label(
+        vcmd = (self.frame.register(self.validate_float), '%P')
+        self.entries["ent_base_length"] = Entry(
+            self.frame, width=10,
+            validate='key', validatecommand=vcmd)
+
+        self.entries["ent_base_length"] = Entry(
+            self.frame, width=10,
+            validate='key', validatecommand=vcmd)
+        self.labels["lbl_base_length"] = Label(
             self.frame, text="Base Length")
-        self.entries["ent_side_length"].pack(side=RIGHT)
-        self.labels["lbl_side_length"].pack(side=LEFT)
+        self.entries["ent_base_length"].pack(side=RIGHT)
+        self.labels["lbl_base_length"].pack(side=LEFT)
 
     def init_draw_button(self):
         """
@@ -329,15 +360,31 @@ class Parameters():
                  True,
                  False)]
             start_point = (100, 100)
-            base_length = 10
+            recursion_depth = self.get_recursion_depth()
+            base_length = self.get_base_length()
             self.parent_class.classes["fractal"].set_rules(rules)
             self.parent_class.classes["fractal"].set_base_length(base_length)
             self.parent_class.classes["fractal"].set_startpoint(start_point)
-            self.parent_class.classes["fractal"].draw_fractal(5)
+            self.parent_class.classes["fractal"].draw_fractal(recursion_depth)
 
         self.buttons["btn_draw"] = Button(
             self.frame, text="Draw Fractal", command=draw)
         self.buttons["btn_draw"].pack()
+
+    def get_recursion_depth(self):
+        """Return the user provided input of recursion depth"""
+        str_depth_input = self.entries["ent_recursion_depth"].get()
+        if str_depth_input == '':
+            return None  # default of fractal class while drawing in None
+            # draws the base curve instead
+        return int(str_depth_input)
+
+    def get_base_length(self):
+        """Return the user provided input of base length"""
+        str_len_input = self.entries["ent_base_length"].get()
+        if str_len_input in ['', '.', '+.', '-.']:
+            return 10.0  # default base length
+        return float(str_len_input)
 
 
 A_ADV = GUI()

@@ -8,14 +8,23 @@ class FastFractal():
     fractals on the canvas
     """
 
-    def __init__(self, rules, start_point, base_length):
+    def __init__(
+            self,
+            parent,
+            rules=None,
+            start_point=(
+                100,
+                100),
+            base_length=10):
         """
         Initialize the canvas
+        parent is the parent class (GUI class) to hold functionalities
         """
         self.rules = rules
         self.start_point = start_point
         self.base_length = base_length
-        self.curve = []
+        self.parent = parent
+        self.recursion_depth = 1
 
     def set_startpoint(self, point):
         """
@@ -23,7 +32,30 @@ class FastFractal():
         """
         self.start_point = point
 
-# def resize_curve(self, factor):
+    def set_rules(self, rules):
+        """
+        Change the rules to a new set of rules
+        """
+        self.rules = rules
+
+    def set_base_length(self, base_length):
+        """
+        Change base_length (length of the base fractal curve)
+        to the new provided value
+        """
+        self.base_length = base_length
+
+    def set_parent(self, parent):
+        """
+        Set the parent of the class to the provided parent
+        """
+        self.parent = parent
+
+    def set_recursion_depth(self, recursion_depth):
+        """
+        Set the recursion depth of the class to provided recursion_depth
+        """
+        self.recursion_depth = recursion_depth
 
     def reflection(self, line, point):
         """
@@ -118,10 +150,12 @@ class FastFractal():
                 last_y + self.base_length * scale_fac * sin(theta)))
         return curve
 
-    def fractal_curve(self, recursion_depth):
+    def fractal_curve(self, recursion_depth=None):
         """
         Form a recursive curve from rules of recursion_depth
         """
+        if recursion_depth is None:
+            recursion_depth = self.recursion_depth
         if recursion_depth == 1:
             return self.form_base_curve()
         curve_prev_level = self.fractal_curve(recursion_depth - 1)
@@ -149,3 +183,12 @@ class FastFractal():
             last_point = sub_crv[-1]
         return curve
 
+    def draw_fractal(self, recursion_depth=None):
+        """
+        Draw the fractal curve on the canvas of the parent class
+        """
+        if recursion_depth:
+            curve_to_draw = self.fractal_curve(recursion_depth)
+        else:
+            curve_to_draw = self.fractal_curve(self.recursion_depth)
+        self.parent.canvas.create_line(curve_to_draw)

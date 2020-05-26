@@ -1,5 +1,6 @@
 """Class to store, import, export, display defined curves """
 import math
+import json
 PI = math.pi
 RAD_FAC = PI / 180  # factor to multiply to convert degrees to radians
 DEG_FAC = 180 / PI  # factor multiplied to convert radians to degree
@@ -16,19 +17,36 @@ class Curve():
         Initialize the curve through its base rules
         """
         self.rules = None
-        print("TODO")
+        self.base_length = None
+        self.start_point = None
+        self.recursion_depth = 1
 
     def load_from_file(self, filepath):
         """
         Load the curve from a file
         """
-        print("TODO", filepath)
+        with open(filepath, 'r') as curve_data_file:
+            try:
+                curve_data = json.load(curve_data_file)
+                self.rules = curve_data["rules"]
+                self.base_length = curve_data["base_length"]
+                self.start_point = curve_data["start_point"]
+                self.recursion_depth = curve_data["recursion_depth"]
+            except json.JSONDecodeError as KeyError:
+                print("Malformed JSON data")
 
     def store_curve_tofile(self, filepath):
         """
-        Store the curve representation in a file
+        Store the curve representation in a file (JSON)
         """
-        print("TODO", filepath)
+        curve_data = {
+            "rules": self.rules,
+            "base_length": self.base_length,
+            "start_point": self.start_point,
+            "recursion_depth": self.recursion_depth
+        }
+        with open(filepath, 'w') as write_file:
+            json.dump(curve_data, write_file, indent=2)
 
     def from_turtle_representation(self, representation_string):
         """
@@ -85,3 +103,31 @@ class Curve():
                      is_flipped, is_reversed))
         self.rules = formed_rules
         return formed_rules
+
+    def convert_rules_angles(self, rules=None, to_radians=True):
+        """
+        Convert the angles used in representation from degrees to
+        radians and vice versa.
+        to_radians = True changes the angles in degrees to radians
+        to_radians = False changes radian angles to degrees
+        if no rules are provided, it modifies self.rules
+        """
+        modify_self_rules = False
+        if rules is None:
+            rules = self.rules
+            modify_self_rules = True
+        converted_rules = []
+        for rule in rules:
+            angle, factor, is_flipped, is_reversed = rule
+            if to_radians:
+                new_angle = angle * RAD_FAC
+            else:
+                new_angle = angle * DEG_FAC
+            converted_rules.append((
+                new_angle, factor, is_flipped, is_reversed))
+        if modify_self_rules:
+            self.rules = converted_rules
+        return converted_rules
+
+
+a = Curve()

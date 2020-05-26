@@ -218,7 +218,8 @@ class Parameters():
         self.buttons = {
             "btn_save_as": None,
             "btn_clear_canvas": None,
-            "btn_draw": None
+            "btn_draw": None,
+            "btn_save_params": None
         }
         self.entries = {
             "ent_recursion_depth": None,
@@ -233,6 +234,8 @@ class Parameters():
         self.init_recursion_depth_entry()
         self.init_base_length_entry()
         self.init_draw_button()
+        self.init_save_curve_params_button()
+        self.init_load_params_button()
 
     def init_saveas_button(self):
         """
@@ -370,6 +373,42 @@ class Parameters():
         self.buttons["btn_draw"] = Button(
             self.frame, text="Draw Fractal", command=draw)
         self.buttons["btn_draw"].pack()
+    
+    def init_save_curve_params_button(self):
+        """
+        Initialize Button to invoke save parameters to a file
+        """
+        def save_params():
+            """
+            function to invoke different save routines
+            """
+            file_name = filedialog.asksaveasfilename(
+                filetypes=[
+                    ("JSON", "*.json")
+                ],
+                initialdir=os.getcwd())
+            if file_name:  # save option not cancelled by user
+                self.parent_class.classes["fractal"].curve.store_curve_tofile(file_name)
+
+        self.buttons["btn_save_params"] = Button(
+            self.frame, text="Save Parameters", command=save_params)
+        self.buttons["btn_save_params"].pack()
+    
+    def init_load_params_button(self):
+        """
+        Initialize the button to load parameters from a json file
+        """
+        def load_params():
+            """
+            load parameters from the Curve class to the fastfractal
+            """
+            file_name = filedialog.askopenfilename(filetypes = [("JSON","*.json")])
+            if file_name:
+                self.parent_class.classes["fractal"].curve.load_from_file(file_name)
+                self.parent_class.classes["fractal"].curve.set_parent_parameters()
+        self.buttons["btn_load_params"] = Button(
+                self.frame, text="Load Parameters", command=load_params)
+        self.buttons["btn_load_params"].pack()
 
     def get_recursion_depth(self):
         """Return the user provided input of recursion depth"""

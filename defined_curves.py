@@ -12,10 +12,11 @@ class Curve():
     implemented for flip representations for now, should be extended later
     """
 
-    def __init__(self):
+    def __init__(self, parent=None):
         """
         Initialize the curve through its base rules
         """
+        self.parent = parent
         self.rules = None
         self.base_length = None
         self.start_point = None
@@ -39,6 +40,7 @@ class Curve():
         """
         Store the curve representation in a file (JSON)
         """
+        self.get_parameters()
         curve_data = {
             "rules": self.rules,
             "base_length": self.base_length,
@@ -128,6 +130,17 @@ class Curve():
         if modify_self_rules:
             self.rules = converted_rules
         return converted_rules
-
+        
+    def get_parameters(self):
+        self.rules = self.parent.rules
+        self.start_point = self.parent.start_point
+        self.base_length = self.parent.base_length
+        self.recursion_depth = self.parent.recursion_depth
+    
+    def set_parent_parameters(self):
+        self.parent.rules = self.rules
+        self.parent.start_point = self.start_point
+        self.parent.base_length = self.base_length
+        self.parent.recursion_depth = self.recursion_depth
 
 a = Curve()

@@ -1,6 +1,6 @@
 """Module for drawing fractals fastly by operations on points directly"""
 from math import cos, sin
-
+from defined_curves import Curve
 
 class FastFractal():
     """
@@ -25,6 +25,7 @@ class FastFractal():
         self.base_length = base_length
         self.parent = parent
         self.recursion_depth = 1
+        self.curve = Curve(self)
 
     def set_startpoint(self, point):
         """

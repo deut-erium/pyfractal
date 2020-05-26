@@ -4,11 +4,13 @@ import io
 import math
 import os
 import re
-from tkinter import Tk, Frame, Canvas, Scrollbar, Menu, filedialog, Button
-from tkinter import HORIZONTAL, VERTICAL, BOTH, TOP, LEFT, RIGHT, X, Y, BOTTOM
+from tkinter import Tk, Frame, Canvas, Scrollbar, Menu, filedialog, Button, Entry, Label
+from tkinter import HORIZONTAL, VERTICAL, BOTH, TOP, \
+    LEFT, RIGHT, X, Y, BOTTOM
 from PIL import Image
 import canvasvg
 from fastfractal import FastFractal
+
 
 def todo():
     """ function substituted to do"""
@@ -41,6 +43,10 @@ class GUI():
         self.init_canvas_frame()
         self.init_parameters_frame()
         self.init_menu_bar()
+        self.classes = {
+            "parameters": Parameters(self),
+            "fractal": FastFractal(self)
+        }
 
     def init_canvas_frame(self, max_width=1080, max_height=1920):
         """
@@ -69,7 +75,8 @@ class GUI():
         self.canvas.bind("<B1-Motion>", self.move_move)
         self.canvas.bind("<Button-4>", self.linux_zoomer_plus)
         self.canvas.bind("<Button-5>", self.linux_zoomer_minus)
-        self.canvas.bind("<MouseWheel>", self.windows_zoomer)  # windows scroll
+        # windows scroll
+        self.canvas.bind("<MouseWheel>", self.windows_zoomer)
 
     def move_start(self, event):
         """
@@ -195,43 +202,55 @@ class GUI():
 
 class Parameters():
     """
-    Class for holding the functionality and fields in the parameters frame of 
-    GUI class this class would contain different methods for interaction with
-    the canvas and general features desired in an application
+    Class for holding the functionality and fields in the parameters
+    frame of GUI class this class would contain different methods for
+    interaction with the canvas and general features desired in an
+    application
     """
+
     def __init__(self, parent_class):
         """
-        Initializing the class into the frame of parent i.e the frame in which
-        the elements would be placed
-        parent_class intended to access features of parent class
+        Initializing the class into the frame of parent GUI class
+        i.e parent_class intended to access features of parent class
         """
         self.parent_class = parent_class
         self.frame = parent_class.frames["parameters"]
         self.buttons = {
-            "btn_save_as" : None
+            "btn_save_as": None,
+            "btn_clear_canvas": None,
+            "btn_draw": None
         }
         self.entries = {
-
+            "ent_recursion_depth": None,
+            "ent_side_length": None
+        }
+        self.labels = {
+            "lbl_recursion_depth": None,
+            "lbl_side_length": None
         }
         self.init_saveas_button()
+        self.init_clear_canvas_button()
+        self.init_recursion_depth_entry()
+        self.init_side_length_entry()
+        self.init_draw_button()
 
     def init_saveas_button(self):
         """
-        save_as button
+        save_as button to save canvas into svg, ps, png extensions
         """
         def save():
             """
             function to invoke different save routines
             """
             file_name = filedialog.asksaveasfilename(
-                    filetypes=[
-                        ("Scalable Vector Graphics", "*.svg"),
-                        ("Postscript", "*.ps"),
-                        ("Portable Network Graphics", "*.png")
-                    ],
-                    initialdir = os.getcwd())
-            if file_name:
-                extension = re.search("\.[\w]+$",file_name)[0]
+                filetypes=[
+                    ("Scalable Vector Graphics", "*.svg"),
+                    ("Postscript", "*.ps"),
+                    ("Portable Network Graphics", "*.png")
+                ],
+                initialdir=os.getcwd())
+            if file_name:  # save option not cancelled by user
+                extension = re.search(r"\.[\w]+$", file_name)[0]
                 if extension == '.png':
                     self.parent_class.save_png(file_name)
                 elif extension == ".ps":
@@ -241,22 +260,86 @@ class Parameters():
                 else:
                     raise TypeError("Unknown Filetype")
 
-        self.buttons["btn_save_as"] = Button(self.frame, text="Save As", command = save)
+        self.buttons["btn_save_as"] = Button(
+            self.frame, text="Save As", command=save)
         self.buttons["btn_save_as"].pack()
-        
 
+    def init_clear_canvas_button(self):
+        """
+        Button to clear the canvas to a blank state
+        """
+        def clear_canvas():
+            """ Function to clear the canvas"""
+            self.parent_class.canvas.delete("all")
 
+        self.buttons["btn_clear_canvas"] = Button(
+            self.frame, text="Clear", command=clear_canvas)
+        self.buttons["btn_clear_canvas"].pack()
+
+    def init_recursion_depth_entry(self):
+        """
+        Entry field to specify recursion depth of the fractal
+        from the user, entries fetched on executing draw
+        """
+        self.entries["ent_recursion_depth"] = Entry(self.frame, width=10)
+        self.labels["lbl_recursion_depth"] = Label(
+            self.frame, text="Recursion Depth")
+        self.entries["ent_recursion_depth"].pack(side=RIGHT)
+        self.labels["lbl_recursion_depth"].pack(side=LEFT)
+
+    def init_side_length_entry(self):
+        """
+        Entry field to specify side length of base fractal curve
+        """
+        self.entries["ent_side_length"] = Entry(self.frame, width=10)
+        self.labels["lbl_side_length"] = Label(
+            self.frame, text="Base Length")
+        self.entries["ent_side_length"].pack(side=RIGHT)
+        self.labels["lbl_side_length"].pack(side=LEFT)
+
+    def init_draw_button(self):
+        """
+        Initialize draw button on the frame which draws the fractal curve
+        of the parent class
+        """
+        def draw():
+            """
+            Invoke draw function of fractal class of the parent
+            with suitable arguments
+            """
+            rules = [
+                (math.pi / 2,
+                 1,
+                 False,
+                 True),
+                (0,
+                 0.5773,
+                 True,
+                 True),
+                (0,
+                 0.5773,
+                 False,
+                 False),
+                (-2 * math.pi / 3,
+                 0.5773,
+                 False,
+                 False),
+                (-math.pi / 6,
+                 1,
+                 True,
+                 False)]
+            start_point = (100, 100)
+            base_length = 10
+            self.parent_class.classes["fractal"].set_rules(rules)
+            self.parent_class.classes["fractal"].set_base_length(base_length)
+            self.parent_class.classes["fractal"].set_startpoint(start_point)
+            self.parent_class.classes["fractal"].draw_fractal(5)
+
+        self.buttons["btn_draw"] = Button(
+            self.frame, text="Draw Fractal", command=draw)
+        self.buttons["btn_draw"].pack()
 
 
 A_ADV = GUI()
-v = Parameters(A_ADV)
-rules = [(math.pi/2,1,False,True),(0,0.5773,True,True),(0,0.5773,False,False),(-2*math.pi/3,0.5773,False,False),(-math.pi/6,1,True,False)]
-start_point = (100,100)
-base_length = 10
-fractal = FastFractal(rules,start_point,base_length)
-rules = [(math.pi/2,1,False,True),(0,0.5773,True,True),(0,0.5773,False,False),(-2*math.pi/3,0.5773,False,False),(-math.pi/6,1,True,False)]
-start_point = (100,100)
-base_length = 10
-fractal = FastFractal(rules,start_point,base_length)
-A_ADV.canvas.create_line(fractal.fractal_curve(8))
+# A_ADV.canvas.create_line(fractal.fractal_curve(7))
 A_ADV.window.mainloop()

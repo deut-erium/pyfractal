@@ -4,12 +4,13 @@ import io
 import math
 import os
 import re
-from tkinter import Tk, Frame, Canvas, Scrollbar, Menu, filedialog, Button, Entry, Label
-from tkinter import HORIZONTAL, VERTICAL, BOTH, TOP, \
-    LEFT, RIGHT, X, Y, BOTTOM
+from tkinter import Tk, Frame, Canvas, Scrollbar, Menu, filedialog, \
+         Button, Entry, Label
+from tkinter import HORIZONTAL, VERTICAL, BOTH, LEFT, RIGHT, X, Y, BOTTOM
 from PIL import Image
 import canvasvg
 from fastfractal import FastFractal
+from rules_input import RulesInput
 
 
 def todo():
@@ -215,6 +216,9 @@ class Parameters():
         """
         self.parent_class = parent_class
         self.frame = parent_class.frames["parameters"]
+        self.rules_frame = None  # different class to add rules
+        # stuff upadated in its own frame
+        # things added dynamically
         self.buttons = {
             "btn_save_as": None,
             "btn_clear_canvas": None,
@@ -236,6 +240,7 @@ class Parameters():
         self.init_draw_button()
         self.init_save_curve_params_button()
         self.init_load_params_button()
+        self.init_rules_frame()
 
     def init_saveas_button(self):
         """
@@ -295,22 +300,22 @@ class Parameters():
         self.entries["ent_recursion_depth"].pack(side=RIGHT)
         self.labels["lbl_recursion_depth"].pack(side=LEFT)
 
-    def validate_integer(self, P):
+    def validate_integer(self, p_str):
         """
-        Validate only if P is integer or null input
+        Validate only if p_str is integer or null input
         """
-        # P is str
-        if re.search(r"^[1-9]\d*$", P) or P == "":
+        # p_str is str
+        if re.search(r"^[1-9]\d*$", p_str) or p_str == "":
             return True
         return False
 
-    def validate_float(self, P):
+    def validate_float(self, p_str):
         """
         Validate if input is a valid floating point number
         """
         # may validate only '[+-].' which needs to be handled later
         float_pattern = r"^[\+\-]?([0-9]*[.])?[0-9]*$"
-        if re.search(float_pattern, P) or P == "":
+        if re.search(float_pattern, p_str) or p_str == "":
             return True
         return False
 
@@ -373,7 +378,7 @@ class Parameters():
         self.buttons["btn_draw"] = Button(
             self.frame, text="Draw Fractal", command=draw)
         self.buttons["btn_draw"].pack()
-    
+
     def init_save_curve_params_button(self):
         """
         Initialize Button to invoke save parameters to a file
@@ -388,12 +393,13 @@ class Parameters():
                 ],
                 initialdir=os.getcwd())
             if file_name:  # save option not cancelled by user
-                self.parent_class.classes["fractal"].curve.store_curve_tofile(file_name)
+                self.parent_class.classes["fractal"].curve.store_curve_tofile(
+                    file_name)
 
         self.buttons["btn_save_params"] = Button(
             self.frame, text="Save Parameters", command=save_params)
         self.buttons["btn_save_params"].pack()
-    
+
     def init_load_params_button(self):
         """
         Initialize the button to load parameters from a json file
@@ -402,13 +408,22 @@ class Parameters():
             """
             load parameters from the Curve class to the fastfractal
             """
-            file_name = filedialog.askopenfilename(filetypes = [("JSON","*.json")])
+            file_name = filedialog.askopenfilename(
+                filetypes=[("JSON", "*.json")])
             if file_name:
-                self.parent_class.classes["fractal"].curve.load_from_file(file_name)
-                self.parent_class.classes["fractal"].curve.set_parent_parameters()
+                self.parent_class.classes["fractal"].curve.load_from_file(
+                    file_name)
+                self.parent_class.classes["fractal"].curve.set_parent_parameters(
+                )
         self.buttons["btn_load_params"] = Button(
-                self.frame, text="Load Parameters", command=load_params)
+            self.frame, text="Load Parameters", command=load_params)
         self.buttons["btn_load_params"].pack()
+
+    def init_rules_frame(self):
+        """
+        Initialize a frame to hold entries for input of rule
+        """
+        self.rules_frame = RulesInput(self.frame)
 
     def get_recursion_depth(self):
         """Return the user provided input of recursion depth"""
@@ -421,7 +436,7 @@ class Parameters():
     def get_base_length(self):
         """Return the user provided input of base length"""
         str_len_input = self.entries["ent_base_length"].get()
-        if str_len_input in ['', '.', '+.', '-.']:
+        if str_len_input in ['', '.', '+.', '-.', '+', '-']:
             return 10.0  # default base length
         return float(str_len_input)
 

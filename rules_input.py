@@ -1,7 +1,11 @@
 """Class to handle input and fetching rules from GUI"""
-from tkinter import Frame, Button, Entry, BooleanVar, LEFT, RIGHT, END, Checkbutton, Tk, Canvas
+from tkinter import Frame, Button, Entry, BooleanVar, \
+         LEFT, END, Checkbutton, Tk, Canvas, Radiobutton, Label, W
 import re
 from math import cos, sin
+from math import pi as PI
+RAD_FAC = PI / 180  # factor to multiply to convert degrees to radians
+DEG_FAC = 180 / PI  # factor multiplied to convert radians to degree
 
 
 class RulesInput():
@@ -23,10 +27,14 @@ class RulesInput():
         # contains the keys for frame, and its children
         self.add_button = None
         self.sub_button = None
+        self.radio_angle_var = BooleanVar(
+            self.frame)  # initially set to radians
+        self.radio_angle_var.set(True)
+        self.init_preview_canvas()
+        self.init_info_labels()
         self.init_add_entry_button()
         self.init_sub_entry_button()
         # self.init_extract_rules_button()
-        self.init_preview_canvas()
         self.frame.pack()
 
     def create_entry_dictionary(self):
@@ -39,21 +47,23 @@ class RulesInput():
         vcmd = (self.frame.register(self.validate_float), '%P')
         entry_frame = Frame(self.frame)
         ent_length = Entry(
-            entry_frame, validate='key', validatecommand=vcmd)
+            entry_frame, validate='key',
+            width=8, validatecommand=vcmd)
         ent_angle = Entry(
-            entry_frame, validate='key', validatecommand=vcmd)
+            entry_frame, validate='key',
+            width=8, validatecommand=vcmd)
         is_reversed_state = BooleanVar(entry_frame)
         is_flipped_state = BooleanVar(entry_frame)
         chkbtn_is_reversed = Checkbutton(
-            entry_frame, text='reversed', var=is_reversed_state)
+            entry_frame, text='reverse', var=is_reversed_state)
         chkbtn_is_flipped = Checkbutton(
-            entry_frame, text='flipped', var=is_flipped_state)
+            entry_frame, text='flip', var=is_flipped_state)
 
         ent_angle.pack(side=LEFT)
         ent_length.pack(side=LEFT)
         chkbtn_is_flipped.pack(side=LEFT)
         chkbtn_is_reversed.pack(side=LEFT)
-        entry_frame.pack()
+        entry_frame.grid(row=len(self.entries) + 3, columnspan=4)
         entry_dict = {
             "frame": entry_frame,
             "ent_len": ent_length,
@@ -78,7 +88,7 @@ class RulesInput():
             self.render_preview()
 
         self.add_button = Button(self.frame, text='+', command=add_entry)
-        self.add_button.pack(side=RIGHT)
+        self.add_button.grid(row=1, column=2)
 
     def init_sub_entry_button(self):
         """
@@ -93,7 +103,7 @@ class RulesInput():
             self.render_preview()
 
         self.sub_button = Button(self.frame, text='-', command=sub_entry)
-        self.sub_button.pack(side=RIGHT)
+        self.sub_button.grid(row=1, column=3)
 
     def validate_float(self, p_str):
         """
@@ -120,7 +130,12 @@ class RulesInput():
 
         extracted_rules = []
         for entry in self.entries:
-            ent_angle = get_float_value(entry["ent_angle"].get())
+            if self.radio_angle_var.get():  # if true, means radians, extract as is
+                ent_angle = get_float_value(entry["ent_angle"].get())
+            else:
+                ent_angle = get_float_value(
+                    entry["ent_angle"].get()) * RAD_FAC  # convert degree to radians
+            ent_angle = ent_angle % (2 * PI)
             ent_len = get_float_value(entry["ent_len"].get())
             is_reversed = entry["reverse_state"].get()
             is_flipped = entry["flip_state"].get()
@@ -139,7 +154,10 @@ class RulesInput():
             new_entry = self.create_entry_dictionary()
             # clear and insert angle
             new_entry['ent_angle'].delete(0, END)
-            new_entry['ent_angle'].insert(0, str(angle))
+            if self.radio_angle_var.get():  # if angle in radians
+                new_entry['ent_angle'].insert(0, str(angle))
+            else:
+                new_entry['ent_angle'].insert(0, str(angle * DEG_FAC))
             # clear and insert length
             new_entry['ent_len'].delete(0, END)
             new_entry['ent_len'].insert(0, str(length))
@@ -149,20 +167,20 @@ class RulesInput():
 
             self.entries.append(new_entry)
 
-    def init_extract_rules_button(self):
-        """
-        Test button to check extracted rules
-        """
-        def print_extracted():
-            """
-            Print the extracted rules to stdout
-            """
-            print("Extracted:")
-            print(self.extract_rules())
-
-        self.test_button = Button(
-            self.frame, text="extract", command=print_extracted)
-        self.test_button.pack()
+#     def init_extract_rules_button(self):
+#         """
+#         Test button to check extracted rules
+#         """
+#         def print_extracted():
+#             """
+#             Print the extracted rules to stdout
+#             """
+#             print("Extracted:")
+#             print(self.extract_rules())
+#
+#         self.test_button = Button(
+#             self.frame, text="extract", command=print_extracted)
+#         self.test_button.pack()
 
     def init_preview_canvas(self):
         """
@@ -171,7 +189,7 @@ class RulesInput():
         """
         self.preview_canvas = Canvas(
             self.frame, width=200, height=200)
-        self.preview_canvas.pack()
+        self.preview_canvas.grid(row=0, columnspan=4, sticky=W)
 
     def form_base_curve(self, rules):
         """
@@ -211,6 +229,21 @@ class RulesInput():
         self.preview_canvas.delete("all")
         if len(curve) > 1:  # draw only if there are more than one points
             self.preview_canvas.create_line(curve)
+
+    def init_info_labels(self):
+        """
+        Initialize the labels providing info about input fields
+        """
+        Radiobutton(
+            self.frame, variable=self.radio_angle_var,
+            value=False, text="Degrees").grid(row=1, column=0)
+        Radiobutton(
+            self.frame, variable=self.radio_angle_var,
+            value=True, text="Radians").grid(row=1, column=1)
+        Label(
+            self.frame, text="Angle").grid(row=2, column=0, sticky=W)
+        Label(
+            self.frame, text="Length").grid(row=2, column=1, sticky=W)
 
 
 if __name__ == "__main__":

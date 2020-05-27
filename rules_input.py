@@ -1,6 +1,7 @@
 """Class to handle input and fetching rules from GUI"""
-from tkinter import Frame, Button, Entry, BooleanVar, LEFT, RIGHT, Checkbutton, Tk
+from tkinter import Frame, Button, Entry, BooleanVar, LEFT, RIGHT, END, Checkbutton, Tk, Canvas
 import re
+from math import cos, sin
 
 
 class RulesInput():
@@ -17,13 +18,15 @@ class RulesInput():
         """
         self.parent_frame = parent_frame
         self.frame = Frame(parent_frame)
+        self.preview_canvas = None  # canvas to preview curve
         self.entries = []  # list of dictionaries, each dictionary
         # contains the keys for frame, and its children
         self.add_button = None
         self.sub_button = None
         self.init_add_entry_button()
         self.init_sub_entry_button()
-        self.init_extract_rules_button()
+        # self.init_extract_rules_button()
+        self.init_preview_canvas()
         self.frame.pack()
 
     def create_entry_dictionary(self):
@@ -72,6 +75,7 @@ class RulesInput():
             """
             new_entry = self.create_entry_dictionary()
             self.entries.append(new_entry)
+            self.render_preview()
 
         self.add_button = Button(self.frame, text='+', command=add_entry)
         self.add_button.pack(side=RIGHT)
@@ -86,6 +90,7 @@ class RulesInput():
             """
             if self.entries != []:
                 self.entries.pop()["frame"].destroy()
+            self.render_preview()
 
         self.sub_button = Button(self.frame, text='-', command=sub_entry)
         self.sub_button.pack(side=RIGHT)
@@ -129,7 +134,20 @@ class RulesInput():
         """
         Fill in the entries in GUI for user feedback
         """
-        pass
+        for rule in rules:
+            angle, length, is_flipped, is_reversed = rule
+            new_entry = self.create_entry_dictionary()
+            # clear and insert angle
+            new_entry['ent_angle'].delete(0, END)
+            new_entry['ent_angle'].insert(0, str(angle))
+            # clear and insert length
+            new_entry['ent_len'].delete(0, END)
+            new_entry['ent_len'].insert(0, str(length))
+            # set booleans
+            new_entry['reverse_state'].set(is_reversed)
+            new_entry['flip_state'].set(is_flipped)
+
+            self.entries.append(new_entry)
 
     def init_extract_rules_button(self):
         """
@@ -145,6 +163,54 @@ class RulesInput():
         self.test_button = Button(
             self.frame, text="extract", command=print_extracted)
         self.test_button.pack()
+
+    def init_preview_canvas(self):
+        """
+        Canvas to draw the base curve from rules and give
+        preview to the user
+        """
+        self.preview_canvas = Canvas(
+            self.frame, width=200, height=200)
+        self.preview_canvas.pack()
+
+    def form_base_curve(self, rules):
+        """
+        Form the base curve from extracted rules for previewing
+        Resized to fit into the preview canvas
+        """
+        curve = [(0, 0)]
+        for theta, scale_fac, _, _ in rules:
+            last_x, last_y = curve[-1]
+            curve.append((
+                last_x + scale_fac * cos(theta),
+                last_y + scale_fac * sin(theta)))
+
+        min_x = min(point[0] for point in curve)
+        min_y = min(point[1] for point in curve)
+        scale_y = max(point[1] - min_y for point in curve)
+        scale_x = max(point[0] - min_x for point in curve)
+        if scale_x == 0 or scale_y == 0:
+            return curve
+        canvas_width = self.preview_canvas.winfo_width()
+        canvas_height = self.preview_canvas.winfo_height()
+        to_scale = min(canvas_width / scale_x, canvas_height / scale_y) * 0.9
+        curve = [
+            ((point[0] - min_x) * to_scale + canvas_width / 10,
+             (point[1] - min_y) * to_scale + canvas_height / 10)
+            for point in curve]
+        return curve
+
+    def render_preview(self):
+        """
+        Render the preview on canvas on calling the function
+        Desired to be called by some update function
+        """
+        # Not the best way to do it but the curve size is of constant
+        # order, <20 segments, so it wouldnt create much difference
+        curve = self.form_base_curve(self.extract_rules())
+        self.preview_canvas.delete("all")
+        if len(curve) > 1:  # draw only if there are more than one points
+            self.preview_canvas.create_line(curve)
 
 
 if __name__ == "__main__":

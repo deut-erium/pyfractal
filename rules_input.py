@@ -1,6 +1,6 @@
 """Class to handle input and fetching rules from GUI"""
 from tkinter import Frame, Button, Entry, BooleanVar, \
-         LEFT, END, Checkbutton, Tk, Canvas, Radiobutton, Label, W
+    LEFT, END, Checkbutton, Tk, Canvas, Radiobutton, Label, W
 import re
 from math import cos, sin
 from math import pi as PI
@@ -35,7 +35,7 @@ class RulesInput():
         self.init_add_entry_button()
         self.init_sub_entry_button()
         # self.init_extract_rules_button()
-        self.frame.grid(row=5,column=0,columnspan=3,sticky='nw',pady=10)
+        self.frame.grid(row=5, column=0, columnspan=3, sticky='nw', pady=10)
 
     def create_entry_dictionary(self):
         """

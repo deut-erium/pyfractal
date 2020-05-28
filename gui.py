@@ -5,7 +5,7 @@ import math
 import os
 import re
 from tkinter import Tk, Frame, Canvas, Scrollbar, Menu, filedialog, \
-         Button, Entry, Label
+    Button, Entry, Label
 from tkinter import HORIZONTAL, VERTICAL, BOTH, LEFT, RIGHT, X, Y, BOTTOM, W
 from PIL import Image
 import canvasvg
@@ -270,7 +270,7 @@ class Parameters():
 
         self.buttons["btn_save_as"] = Button(
             self.frame, text="Save As", command=save)
-        self.buttons["btn_save_as"].grid(row=3,column=2)
+        self.buttons["btn_save_as"].grid(row=3, column=2)
 
     def init_clear_canvas_button(self):
         """
@@ -282,7 +282,7 @@ class Parameters():
 
         self.buttons["btn_clear_canvas"] = Button(
             self.frame, width=14, text="Clear", command=clear_canvas)
-        self.buttons["btn_clear_canvas"].grid(row=3,column=1)
+        self.buttons["btn_clear_canvas"].grid(row=3, column=1)
 
     def init_recursion_depth_entry(self):
         """
@@ -298,9 +298,9 @@ class Parameters():
         self.labels["lbl_recursion_depth"] = Label(
             self.frame, text="Recursion Depth")
         self.entries["ent_recursion_depth"].grid(
-                row=0,column=1,sticky=W,pady=(30,0))
+            row=0, column=1, sticky=W, pady=(30, 0))
         self.labels["lbl_recursion_depth"].grid(
-                row=0,column=0,sticky=W,pady=(30,0))
+            row=0, column=0, sticky=W, pady=(30, 0))
 
     def validate_integer(self, p_str):
         """
@@ -335,8 +335,8 @@ class Parameters():
             validate='key', validatecommand=vcmd)
         self.labels["lbl_base_length"] = Label(
             self.frame, text="Base Length")
-        self.entries["ent_base_length"].grid(row=1,column=1,sticky=W)
-        self.labels["lbl_base_length"].grid(row=1,column=0,sticky=W)
+        self.entries["ent_base_length"].grid(row=1, column=1, sticky=W)
+        self.labels["lbl_base_length"].grid(row=1, column=0, sticky=W)
 
     def init_draw_button(self):
         """
@@ -379,7 +379,7 @@ class Parameters():
 
         self.buttons["btn_draw"] = Button(
             self.frame, width=14, text="Draw Fractal", command=draw)
-        self.buttons["btn_draw"].grid(row=3,column=0)
+        self.buttons["btn_draw"].grid(row=3, column=0)
 
     def init_save_curve_params_button(self):
         """
@@ -400,7 +400,7 @@ class Parameters():
 
         self.buttons["btn_save_params"] = Button(
             self.frame, text="Save Parameters", command=save_params)
-        self.buttons["btn_save_params"].grid(row=4,column=1)
+        self.buttons["btn_save_params"].grid(row=4, column=1)
 
     def init_load_params_button(self):
         """
@@ -419,7 +419,7 @@ class Parameters():
                 )
         self.buttons["btn_load_params"] = Button(
             self.frame, text="Load Parameters", command=load_params)
-        self.buttons["btn_load_params"].grid(row=4,column=0)
+        self.buttons["btn_load_params"].grid(row=4, column=0)
 
     def init_rules_frame(self):
         """

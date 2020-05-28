@@ -1,0 +1,22 @@
+{
+  "rules": [
+    [
+      0.0,
+      1.0,
+      true,
+      false
+    ],
+    [
+      1.5707963267948966,
+      1.0,
+      false,
+      true
+    ]
+  ],
+  "base_length": 10.0,
+  "start_point": [
+    100,
+    100
+  ],
+  "recursion_depth": 1
+}

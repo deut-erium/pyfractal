@@ -20,7 +20,7 @@ class FastFractal():
         Initialize the canvas
         parent is the parent class (GUI class) to hold functionalities
         """
-        self.rules = rules
+        self.rules = rules if rules else []
         self.start_point = start_point
         self.base_length = base_length
         self.parent = parent
@@ -192,4 +192,5 @@ class FastFractal():
             curve_to_draw = self.fractal_curve(recursion_depth)
         else:
             curve_to_draw = self.fractal_curve(self.recursion_depth)
-        self.parent.canvas.create_line(curve_to_draw)
+        if len(curve_to_draw)>1: #draw only if there are more than one point
+            self.parent.canvas.create_line(curve_to_draw)

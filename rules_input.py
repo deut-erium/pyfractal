@@ -14,14 +14,15 @@ class RulesInput():
     in Parameters frame
     """
 
-    def __init__(self, parent_frame):
+    def __init__(self, parent_class):
         """
         Initialize parent_frame to the provided class to hold self.frame
         self.frame contains all the elements
         self.entries is a list of dynamically generated entries
         """
-        self.parent_frame = parent_frame
-        self.frame = Frame(parent_frame)
+        self.parent_class = parent_class
+        # frame in parent Parameters class
+        self.frame = Frame(parent_class.frame)
         self.preview_canvas = None  # canvas to preview curve
         self.entries = []  # list of dictionaries, each dictionary
         # contains the keys for frame, and its children
@@ -225,7 +226,9 @@ class RulesInput():
         """
         # Not the best way to do it but the curve size is of constant
         # order, <20 segments, so it wouldnt create much difference
-        curve = self.form_base_curve(self.extract_rules())
+        extracted_rules = self.extract_rules()
+        self.set_rules_in_curve(extracted_rules)
+        curve = self.form_base_curve(extracted_rules)
         self.preview_canvas.delete("all")
         if len(curve) > 1:  # draw only if there are more than one points
             self.preview_canvas.create_line(curve)
@@ -244,6 +247,14 @@ class RulesInput():
             self.frame, text="Angle").grid(row=2, column=0, sticky=W)
         Label(
             self.frame, text="Length").grid(row=2, column=1, sticky=W)
+
+    def set_rules_in_curve(self, rules):
+        """
+        Set the rules entries received into the rules of Curve
+        class
+        """
+        self.parent_class.parent_class.classes["fractal"].set_rules(rules)
+        # Parameters->Gui->fast_fractal.set_rules()
 
 
 if __name__ == "__main__":

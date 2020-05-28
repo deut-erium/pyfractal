@@ -1,7 +1,6 @@
 """Main Class for handling GUI of the application"""
 
 import io
-import math
 import os
 import re
 from tkinter import Tk, Frame, Canvas, Scrollbar, Menu, filedialog, \
@@ -216,7 +215,7 @@ class Parameters():
         """
         self.parent_class = parent_class
         self.frame = parent_class.frames["parameters"]
-        self.rules_frame = None  # different class to add rules
+        self.rules_frame_class = None  # different class to add rules
         # stuff upadated in its own frame
         # things added dynamically
         self.buttons = {
@@ -348,33 +347,9 @@ class Parameters():
             Invoke draw function of fractal class of the parent
             with suitable arguments
             """
-            rules = [
-                (math.pi / 2,
-                 1,
-                 False,
-                 True),
-                (0,
-                 0.5773,
-                 True,
-                 True),
-                (0,
-                 0.5773,
-                 False,
-                 False),
-                (-2 * math.pi / 3,
-                 0.5773,
-                 False,
-                 False),
-                (-math.pi / 6,
-                 1,
-                 True,
-                 False)]
-            start_point = (100, 100)
             recursion_depth = self.get_recursion_depth()
             base_length = self.get_base_length()
-            self.parent_class.classes["fractal"].set_rules(rules)
             self.parent_class.classes["fractal"].set_base_length(base_length)
-            self.parent_class.classes["fractal"].set_startpoint(start_point)
             self.parent_class.classes["fractal"].draw_fractal(recursion_depth)
 
         self.buttons["btn_draw"] = Button(
@@ -417,6 +392,11 @@ class Parameters():
                     file_name)
                 self.parent_class.classes["fractal"].curve.set_parent_parameters(
                 )
+                self.rules_frame_class.fill_entries_from_rules(
+                    self.parent_class.classes["fractal"].rules)
+                # fill the entries in rules input on load
+                self.rules_frame_class.render_preview()
+
         self.buttons["btn_load_params"] = Button(
             self.frame, text="Load Parameters", command=load_params)
         self.buttons["btn_load_params"].grid(row=4, column=0)
@@ -425,7 +405,7 @@ class Parameters():
         """
         Initialize a frame to hold entries for input of rule
         """
-        self.rules_frame = RulesInput(self.frame)
+        self.rules_frame_class = RulesInput(self)
 
     def get_recursion_depth(self):
         """Return the user provided input of recursion depth"""

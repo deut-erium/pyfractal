@@ -2,6 +2,7 @@
 from math import cos, sin
 from defined_curves import Curve
 
+
 class FastFractal():
     """
     FastFractal class to generate a list of points denoting points of line
@@ -192,5 +193,7 @@ class FastFractal():
             curve_to_draw = self.fractal_curve(recursion_depth)
         else:
             curve_to_draw = self.fractal_curve(self.recursion_depth)
-        if len(curve_to_draw)>1: #draw only if there are more than one point
+        if len(curve_to_draw) > 1:  # draw only if there are more than one point
             self.parent.canvas.create_line(curve_to_draw)
+        else:
+            self.parent.canvas.bell() #ring bell to indicate wrong action

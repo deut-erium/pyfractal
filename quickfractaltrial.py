@@ -84,8 +84,8 @@ rules2 = [(math.pi/2,1,False,False),(math.pi/4,0.707,True,False),(0,1,False,Fals
 rules3 = [(math.pi/2,1,False,False),(-math.pi/4,1.414,False,False),(0,1,True,True)]
 rules4 = [(math.pi/2,1,False,False),(math.pi,1,False,False),(math.pi/4,1.414,False,False),(-math.pi/4,1.414,True,True)]
 startpoint = [400,100]
-l = fractal(5,rules3,10,startpoint)
-cv.create_line(l)
+l = fractal(13,rules3,1,startpoint)
+cv.create_polygon(l,fill = "red")
 cv.pack()
 # l = fractal(12,rules)
 # for i in range(0,len(l),1000000):

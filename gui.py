@@ -295,7 +295,7 @@ class Parameters():
             self.frame, width=2,
             validate='key', validatecommand=vcmd)
         self.labels["lbl_recursion_depth"] = Label(
-            self.frame, text="Recursion Depth")
+            self.frame, text="Recursion Depth (int)")
         self.entries["ent_recursion_depth"].grid(
             row=0, column=1, sticky=W, pady=(30, 0))
         self.labels["lbl_recursion_depth"].grid(
@@ -308,6 +308,7 @@ class Parameters():
         # p_str is str
         if re.search(r"^[1-9]\d*$", p_str) or p_str == "":
             return True
+        self.frame.bell() # alert wrong input
         return False
 
     def validate_float(self, p_str):
@@ -318,6 +319,7 @@ class Parameters():
         float_pattern = r"^[\+\-]?([0-9]*[.])?[0-9]*$"
         if re.search(float_pattern, p_str) or p_str == "":
             return True
+        self.frame.bell()
         return False
 
     def init_base_length_entry(self):
@@ -333,7 +335,7 @@ class Parameters():
             self.frame, width=10,
             validate='key', validatecommand=vcmd)
         self.labels["lbl_base_length"] = Label(
-            self.frame, text="Base Length")
+            self.frame, text="Base Length (float)")
         self.entries["ent_base_length"].grid(row=1, column=1, sticky=W)
         self.labels["lbl_base_length"].grid(row=1, column=0, sticky=W)
 

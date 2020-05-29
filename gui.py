@@ -5,7 +5,8 @@ import os
 import re
 from tkinter import Tk, Frame, Canvas, Scrollbar, Menu, filedialog, \
     Button, Entry, Label
-from tkinter import HORIZONTAL, VERTICAL, BOTH, LEFT, RIGHT, X, Y, BOTTOM, W
+from tkinter import HORIZONTAL, VERTICAL, BOTH, LEFT, RIGHT, \
+    X, Y, BOTTOM, W, END
 from PIL import Image
 import canvasvg
 from fastfractal import FastFractal
@@ -42,7 +43,7 @@ class GUI():
         }
         self.init_canvas_frame()
         self.init_parameters_frame()
-        self.init_menu_bar()
+        # self.init_menu_bar()
         self.classes = {
             "parameters": Parameters(self),
             "fractal": FastFractal(self)
@@ -268,8 +269,8 @@ class Parameters():
                     raise TypeError("Unknown Filetype")
 
         self.buttons["btn_save_as"] = Button(
-            self.frame, text="Save As", command=save)
-        self.buttons["btn_save_as"].grid(row=3, column=2)
+            self.frame, text="Save Canvas As", command=save)
+        self.buttons["btn_save_as"].grid(row=5, column=0)
 
     def init_clear_canvas_button(self):
         """
@@ -308,7 +309,7 @@ class Parameters():
         # p_str is str
         if re.search(r"^[1-9]\d*$", p_str) or p_str == "":
             return True
-        self.frame.bell() # alert wrong input
+        self.frame.bell()  # alert wrong input
         return False
 
     def validate_float(self, p_str):
@@ -397,6 +398,10 @@ class Parameters():
                 self.rules_frame_class.fill_entries_from_rules(
                     self.parent_class.classes["fractal"].rules)
                 # fill the entries in rules input on load
+                self.set_recursion_depth_entry(
+                    self.parent_class.classes["fractal"].recursion_depth)
+                self.set_base_length_entry(
+                    self.parent_class.classes["fractal"].base_length)
                 self.rules_frame_class.render_preview()
 
         self.buttons["btn_load_params"] = Button(
@@ -423,6 +428,22 @@ class Parameters():
         if str_len_input in ['', '.', '+.', '-.', '+', '-']:
             return 10.0  # default base length
         return float(str_len_input)
+
+    def set_recursion_depth_entry(self, recursion_depth):
+        """
+        Set the given recursion_depth into the entry
+        """
+        self.entries["ent_recursion_depth"].delete(0, END)
+        self.entries["ent_recursion_depth"].insert(
+            0, str(recursion_depth))
+
+    def set_base_length_entry(self, base_length):
+        """
+        Set the provided base_length into the entry field
+        """
+        self.entries["ent_base_length"].delete(0, END)
+        self.entries["ent_base_length"].insert(
+            0, str(base_length))
 
 
 A_ADV = GUI()

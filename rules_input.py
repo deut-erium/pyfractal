@@ -36,7 +36,7 @@ class RulesInput():
         self.init_add_entry_button()
         self.init_sub_entry_button()
         # self.init_extract_rules_button()
-        self.frame.grid(row=5, column=0, columnspan=3, sticky='nw', pady=10)
+        self.frame.grid(row=6, column=0, columnspan=3, sticky='nw', pady=10)
 
     def create_entry_dictionary(self):
         """
@@ -212,7 +212,7 @@ class RulesInput():
             return curve
         canvas_width = self.preview_canvas.winfo_width()
         canvas_height = self.preview_canvas.winfo_height()
-        to_scale = min(canvas_width / scale_x, canvas_height / scale_y) * 0.9
+        to_scale = min(canvas_width / scale_x, canvas_height / scale_y) * 0.8
         curve = [
             ((point[0] - min_x) * to_scale + canvas_width / 10,
              (point[1] - min_y) * to_scale + canvas_height / 10)
@@ -228,6 +228,7 @@ class RulesInput():
         # order, <20 segments, so it wouldnt create much difference
         extracted_rules = self.extract_rules()
         self.set_rules_in_curve(extracted_rules)
+        # set the rules in the parent curve dynamically
         curve = self.form_base_curve(extracted_rules)
         self.preview_canvas.delete("all")
         if len(curve) > 1:  # draw only if there are more than one points

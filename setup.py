@@ -13,7 +13,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/deut-erium/pyfractal",
     packages=setuptools.find_packages(),
+    include_package_data=True,
     keywords="fractal GUI fractals gui",
+    data_files=[('curves', ['curves/*.json'])],
     license = "MIT",
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -21,6 +23,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "Development Status :: 4 - Beta",
     ],
-    install_requires=['Pillow','tk','canvasvg'],
+    install_requires=['Pillow>=7.0.0','tk>=0.0.1','canvasvg>=1.0.0'],
     python_requires='>=3.6',
 )

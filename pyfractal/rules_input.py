@@ -140,7 +140,7 @@ class RulesInput():
             ent_len = get_float_value(entry["ent_len"].get())
             is_reversed = entry["reverse_state"].get()
             is_flipped = entry["flip_state"].get()
-            if ent_angle or ent_len or is_reversed or is_flipped:
+            if ent_angle or ent_len:
                 # user entered something, otherwise nothing changed
                 extracted_rules.append((
                     ent_angle, ent_len, is_flipped, is_reversed))

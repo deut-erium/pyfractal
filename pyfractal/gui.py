@@ -45,7 +45,7 @@ class GUI():
             "fractal": FastFractal(self)
         }
 
-    def init_canvas_frame(self, max_width=1080, max_height=1920):
+    def init_canvas_frame(self, max_width=4000, max_height=4000):
         """
         Creates and initializes a Frame for the canvas
         max_width, max_height determine the maximum scrollable area

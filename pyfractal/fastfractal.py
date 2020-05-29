@@ -156,6 +156,8 @@ class FastFractal():
         """
         Form a recursive curve from rules of recursion_depth
         """
+        if not self.rules:
+            return [self.start_point]
         if recursion_depth is None:
             recursion_depth = self.recursion_depth
         if recursion_depth == 1:

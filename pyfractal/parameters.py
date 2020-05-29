@@ -3,7 +3,7 @@
 import os
 import re
 from tkinter import filedialog, Button, Entry, Label, W, END
-from rules_input import RulesInput
+from pyfractal.rules_input import RulesInput
 
 
 class Parameters():

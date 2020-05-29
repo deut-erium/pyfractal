@@ -1,6 +1,6 @@
 """Module for drawing fractals fastly by operations on points directly"""
 from math import cos, sin
-from curve import Curve
+from .curve import Curve
 
 
 class FastFractal():

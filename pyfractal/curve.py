@@ -143,4 +143,4 @@ class Curve():
         self.parent.base_length = self.base_length
         self.parent.recursion_depth = self.recursion_depth
 
-a = Curve()
+

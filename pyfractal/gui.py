@@ -6,8 +6,8 @@ from tkinter import HORIZONTAL, VERTICAL, BOTH, LEFT, RIGHT, \
     X, Y, BOTTOM
 from PIL import Image
 import canvasvg
-from fastfractal import FastFractal
-from parameters import Parameters
+from .fastfractal import FastFractal
+from .parameters import Parameters
 
 def todo():
     """ function substituted to do"""

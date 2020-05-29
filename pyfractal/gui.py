@@ -195,9 +195,11 @@ class GUI():
         post_script = self.canvas.postscript().encode()
         img = Image.open(io.BytesIO(post_script))
         img.save(filename, format="PNG")
+    
+    def run(self):
+        """Function to run the mainloop of window of GUI class"""
+        self.window.mainloop()
 
-
-
-A_ADV = GUI()
-# A_ADV.canvas.create_line(fractal.fractal_curve(7))
-A_ADV.window.mainloop()
+if __name__ == '__main__':
+    A_ADV = GUI()
+    A_ADV.run()

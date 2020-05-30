@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyfractal-deut-erium", 
-    version="0.0.2",
+    version="0.0.3",
     author="Himanshu Sheoran",
     author_email="himanshuthesheoran@gmail.com",
     description="A GUI based fractal generator",
@@ -15,7 +15,6 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     include_package_data=True,
     keywords="fractal GUI fractals gui",
-    data_files=[('curves', ['curves/*.json'])],
     license = "MIT",
     classifiers=[
         "Programming Language :: Python :: 3",

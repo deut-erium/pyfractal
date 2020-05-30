@@ -1,13 +1,15 @@
 """Main Class for handling GUI of the application"""
 
 import io
-from tkinter import Tk, Frame, Canvas, Scrollbar, Menu
+from tkinter import Tk, Frame, Canvas, Scrollbar, Menu, ttk
 from tkinter import HORIZONTAL, VERTICAL, BOTH, LEFT, RIGHT, \
-    X, Y, BOTTOM
+    X, Y, BOTTOM, StringVar
 from PIL import Image
+import pkg_resources
 import canvasvg
 from .fastfractal import FastFractal
 from .parameters import Parameters
+
 
 def todo():
     """ function substituted to do"""
@@ -37,6 +39,10 @@ class GUI():
             "filemenu": None,
             "editmenu": None
         }
+        self.combo_box = {
+            "class": None,
+            "variable": None
+        }
         self.init_canvas_frame()
         self.init_parameters_frame()
         # self.init_menu_bar()
@@ -44,6 +50,7 @@ class GUI():
             "parameters": Parameters(self),
             "fractal": FastFractal(self)
         }
+        self.init_parameter_combobox()
 
     def init_canvas_frame(self, max_width=4000, max_height=4000):
         """
@@ -126,6 +133,37 @@ class GUI():
             expand=False,
             fill=BOTH)
 
+    def init_parameter_combobox(self):
+        """
+        Initialize the combobox for pre-defined curves
+        """
+        def load_resource():
+            """
+            Load the data of selected resource of selected item
+            """
+            resource_file = 'curves/' + self.combo_box["class"].get() + '.json'
+            self.classes["fractal"].curve.load_from_resource(
+                resource_file)
+            self.classes["fractal"].curve.set_parent_parameters()
+            self.classes["parameters"].rules_frame_class.fill_entries_from_rules(
+                self.classes["fractal"].rules)
+            self.classes["parameters"].set_base_length_entry(
+                self.classes["fractal"].base_length)
+            self.classes["parameters"].rules_frame_class.render_preview()
+
+        self.combo_box["variable"] = StringVar()
+        self.combo_box["class"] = ttk.Combobox(
+            self.frames["parameters"],
+            textvariable=self.combo_box["variable"],
+            postcommand=load_resource)
+        self.combo_box["class"]["values"] = sorted(list(map(
+            lambda x: x.strip('.json'),
+            pkg_resources.resource_listdir('pyfractal', 'curves'))))
+        # read curves resource, remove the json extension
+        self.combo_box["class"].grid(row=5, column=1)
+        self.combo_box["class"].current(0)
+# load_resource()
+
     def init_menu_bar(self):
         """
         initializes the menubar
@@ -195,10 +233,11 @@ class GUI():
         post_script = self.canvas.postscript().encode()
         img = Image.open(io.BytesIO(post_script))
         img.save(filename, format="PNG")
-    
+
     def run(self):
         """Function to run the mainloop of window of GUI class"""
         self.window.mainloop()
+
 
 if __name__ == '__main__':
     A_ADV = GUI()

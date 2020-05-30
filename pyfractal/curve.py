@@ -1,6 +1,7 @@
 """Class to store, import, export, display defined curves """
 import math
 import json
+from pkg_resources import resource_string as resource_bytes
 PI = math.pi
 RAD_FAC = PI / 180  # factor to multiply to convert degrees to radians
 DEG_FAC = 180 / PI  # factor multiplied to convert radians to degree
@@ -33,8 +34,24 @@ class Curve():
                 self.base_length = curve_data["base_length"]
                 self.start_point = curve_data["start_point"]
                 self.recursion_depth = curve_data["recursion_depth"]
-            except json.JSONDecodeError as KeyError:
+            except (json.JSONDecodeError, KeyError):
                 print("Malformed JSON data")
+
+    def load_from_resource(self, resource_file):
+        """
+        Load curve data from resource_file in the package
+        """
+        resource_data = resource_bytes('pyfractal', resource_file)
+        try:
+            curve_data = json.loads(resource_data)
+            self.rules = curve_data["rules"]
+            self.base_length = curve_data["base_length"]
+            self.start_point = curve_data["start_point"]
+            self.recursion_depth = curve_data["recursion_depth"]
+        except (json.JSONDecodeError, KeyError):
+            print("Malformed JSON data")
+        except FileNotFoundError:
+            print("Curve resource file not found/available")
 
     def store_curve_tofile(self, filepath):
         """
@@ -130,17 +147,21 @@ class Curve():
         if modify_self_rules:
             self.rules = converted_rules
         return converted_rules
-        
+
     def get_parameters(self):
+        """
+        Get the curve parameters from the parent(FastFractal) class
+        """
         self.rules = self.parent.rules
         self.start_point = self.parent.start_point
         self.base_length = self.parent.base_length
         self.recursion_depth = self.parent.recursion_depth
-    
+
     def set_parent_parameters(self):
+        """
+        Set the curve parameters in the parent(FastFractal) class
+        """
         self.parent.rules = self.rules
         self.parent.start_point = self.start_point
         self.parent.base_length = self.base_length
         self.parent.recursion_depth = self.recursion_depth
-
-

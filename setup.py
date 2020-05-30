@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pyfractal-deut-erium", 
-    version="0.0.3",
+    name="pyfractal", 
+    version="0.0.1",
     author="Himanshu Sheoran",
     author_email="himanshuthesheoran@gmail.com",
     description="A GUI based fractal generator",
@@ -23,5 +23,5 @@ setuptools.setup(
         "Development Status :: 4 - Beta",
     ],
     install_requires=['Pillow>=7.0.0','tk>=0.0.1','canvasvg>=1.0.0'],
-    python_requires='>=3.6',
+    python_requires='>=3.5',
 )

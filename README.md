@@ -35,21 +35,11 @@ Perhaps I made a small script which would draw fractals pretty neatly but it had
 ## <a name="setup"></a>Setup
 ```pip3 install pyfractal```
 
-should do the job
+or 
 
-If you have issues with requirements try installing manually by 
+```pip install pyfractal```
 
-```
-pip3 install tk
-pip3 install canvasvg
-pip3 install Pillow
-```
-or
-```
-pip install tk
-pip install canvasvg
-pip install Pillow
-```
+should do the job depending on the distribution
 
 Having issues installing? Feel free to [report issue](https://github.com/deut-erium/pyfractal/issues/new) or simply clone the repository and run [main.py](https://github.com/deut-erium/pyfractal/blob/master/main.py)
 
@@ -60,7 +50,7 @@ import pyfractal  #import the module
 pyfractal.GUI().run()  #to run the main gui
 ```
 A GUI should pop up
-![Main GUI](/images/main_gui.PNG)
+![Main GUI](https://github.com/deut-erium/pyfractal/images/main_gui.PNG)
 
 
 ### Curve parameter input
@@ -79,7 +69,7 @@ The rules are appended to the list of pre-written rules (this is a design choice
 
 ---
 
-![Example Fractal](/images/example_fractal.PNG)
+![Example Fractal](https://github.com/deut-erium/pyfractal/images/example_fractal.PNG)
 ### Drawing fractals
 Feed in/ load the rules, you will see the preview of base fractal image on the smaller canvas.
 

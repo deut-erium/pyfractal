@@ -41,7 +41,7 @@ or
 
 should do the job depending on the distribution
 
-Having issues installing? Feel free to [report issue](https://github.com/deut-erium/pyfractal/issues/new) or simply clone the repository and run [main.py](https://github.com/deut-erium/pyfractal/blob/master/main.py)
+Having issues installing? Feel free to [report issue](https://github.com/deut-erium/pyfractal/issues/new) or simply clone the repository and run [main.py](https://github.com/deut-erium/pyfractal/blob/master/main.py?raw=true)
 
 ## <a name="usage"></a>Usage
 
@@ -50,7 +50,7 @@ import pyfractal  #import the module
 pyfractal.GUI().run()  #to run the main gui
 ```
 A GUI should pop up
-![Main GUI](https://github.com/deut-erium/pyfractal/images/main_gui.PNG)
+![Main GUI](https://github.com/deut-erium/pyfractal/blob/master/images/main_gui.PNG)
 
 
 ### Curve parameter input
@@ -69,7 +69,7 @@ The rules are appended to the list of pre-written rules (this is a design choice
 
 ---
 
-![Example Fractal](https://github.com/deut-erium/pyfractal/images/example_fractal.PNG)
+![Example Fractal](https://github.com/deut-erium/pyfractal/blob/master/images/example_fractal.PNG?raw=true)
 ### Drawing fractals
 Feed in/ load the rules, you will see the preview of base fractal image on the smaller canvas.
 

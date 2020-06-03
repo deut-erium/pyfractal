@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyfractal", 
-    version="0.0.1",
+    version="0.0.2",
     author="Himanshu Sheoran",
     author_email="himanshuthesheoran@gmail.com",
     description="A GUI based fractal generator",
@@ -14,7 +14,7 @@ setuptools.setup(
     url="https://github.com/deut-erium/pyfractal",
     packages=setuptools.find_packages(),
     include_package_data=True,
-    keywords="fractal GUI fractals gui",
+    keywords="fractal GUI graphics turtle beautiful",
     license = "MIT",
     classifiers=[
         "Programming Language :: Python :: 3",

@@ -5,7 +5,7 @@ from tkinter import Tk, Frame, Canvas, Scrollbar, Menu, ttk
 from tkinter import HORIZONTAL, VERTICAL, BOTH, LEFT, RIGHT, \
     X, Y, BOTTOM, StringVar
 from PIL import Image
-import pkg_resources
+from pkg_resources import resource_listdir
 import canvasvg
 from .fastfractal import FastFractal
 from .parameters import Parameters
@@ -158,7 +158,7 @@ class GUI():
             postcommand=load_resource)
         self.combo_box["class"]["values"] = sorted(list(map(
             lambda x: x.strip('.json'),
-            pkg_resources.resource_listdir('pyfractal', 'curves'))))
+            resource_listdir('pyfractal', 'curves'))))
         # read curves resource, remove the json extension
         self.combo_box["class"].grid(row=5, column=1)
         self.combo_box["class"].current(0)

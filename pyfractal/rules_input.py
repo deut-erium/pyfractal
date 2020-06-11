@@ -36,7 +36,7 @@ class RulesInput():
         self.init_add_entry_button()
         self.init_sub_entry_button()
         # self.init_extract_rules_button()
-        self.frame.grid(row=6, column=0, columnspan=3, sticky='nw', pady=10)
+        self.frame.grid(row=7, column=0, columnspan=3, sticky='nw', pady=10)
 
     def create_entry_dictionary(self):
         """

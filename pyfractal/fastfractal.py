@@ -187,7 +187,39 @@ class FastFractal():
             last_point = sub_crv[-1]
         return curve
 
-    def draw_fractal(self, recursion_depth=None):
+    def remove_repeated_points(self, curve):
+        """
+        removes the repeated points in the curve
+        """
+        new_curve = [curve[0]]
+        last_point = curve[0]
+        for next_point in curve[1:]:
+            if next_point != last_point:
+                new_curve.append(next_point)
+            last_point = next_point
+        return new_curve
+
+    def round_corners(self, curve):
+        """
+        Return the curve with rounded corners
+
+        Replaces two points with their midpoint while retaining the
+        start and end points
+        """
+        round_weight = 3
+        rounded_curve = [curve[0]]  # retain the first point
+        current_point = curve[0]
+        for next_point in curve[1:]:
+            mid_point = (
+                (current_point[0] + next_point[0] * round_weight) / (1 + round_weight),
+                (current_point[1] + next_point[1] * round_weight) / (1 + round_weight))
+            rounded_curve.append(mid_point)
+            current_point = next_point
+            round_weight = 1 / round_weight
+        rounded_curve.append(curve[-1])  # retain the last point
+        return rounded_curve
+
+    def draw_fractal(self, recursion_depth=None, round_corners=False):
         """
         Draw the fractal curve on the canvas of the parent class
         """
@@ -195,7 +227,10 @@ class FastFractal():
             curve_to_draw = self.fractal_curve(recursion_depth)
         else:
             curve_to_draw = self.fractal_curve(self.recursion_depth)
-        if len(curve_to_draw) > 1:  # draw only if there are more than one point
+        if len(curve_to_draw) > 1:  # draw only if there are more than one points
+            if round_corners:
+                curve_to_draw = self.round_corners(
+                    self.remove_repeated_points(curve_to_draw))
             self.parent.canvas.create_line(curve_to_draw)
         else:
-            self.parent.canvas.bell() #ring bell to indicate wrong action
+            self.parent.canvas.bell()  # ring bell to indicate wrong action

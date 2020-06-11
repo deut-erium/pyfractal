@@ -2,7 +2,8 @@
 
 import os
 import re
-from tkinter import filedialog, Button, Entry, Label, W, END
+from tkinter import filedialog, Button, Entry, Label, W, END, \
+    Checkbutton, BooleanVar
 from pyfractal.rules_input import RulesInput
 
 
@@ -28,7 +29,8 @@ class Parameters():
             "btn_save_as": None,
             "btn_clear_canvas": None,
             "btn_draw": None,
-            "btn_save_params": None
+            "btn_save_params": None,
+            "chkbtn_round_corners": None
         }
         self.entries = {
             "ent_recursion_depth": None,
@@ -38,6 +40,9 @@ class Parameters():
             "lbl_recursion_depth": None,
             "lbl_base_length": None
         }
+        self.vars = {
+            "round_corners": None
+        }
         self.init_saveas_button()
         self.init_clear_canvas_button()
         self.init_recursion_depth_entry()
@@ -45,6 +50,7 @@ class Parameters():
         self.init_draw_button()
         self.init_save_curve_params_button()
         self.init_load_params_button()
+        self.init_round_curve_checkbox()
         self.init_rules_frame()
 
     def init_saveas_button(self):
@@ -158,7 +164,9 @@ class Parameters():
             recursion_depth = self.get_recursion_depth()
             base_length = self.get_base_length()
             self.parent_class.classes["fractal"].set_base_length(base_length)
-            self.parent_class.classes["fractal"].draw_fractal(recursion_depth)
+            is_curved = self.vars["round_corners"].get()
+            self.parent_class.classes["fractal"].draw_fractal(
+                recursion_depth, is_curved)
 
         self.buttons["btn_draw"] = Button(
             self.frame, width=14, text="Draw Fractal", command=draw)
@@ -184,6 +192,19 @@ class Parameters():
         self.buttons["btn_save_params"] = Button(
             self.frame, text="Save Parameters", command=save_params)
         self.buttons["btn_save_params"].grid(row=4, column=1)
+
+    def init_round_curve_checkbox(self):
+        """
+        Initializes checkbox for drawing curve with rounded corners
+
+        Rounding corners is done simply by replacing points with the
+        midpoints of adjacent points on the original fractal curve
+        """
+        self.vars["round_corners"] = BooleanVar(self.frame)
+        self.buttons["chkbtn_round_corners"] = Checkbutton(
+            self.frame, text='round corners',
+            var=self.vars["round_corners"])
+        self.buttons["chkbtn_round_corners"].grid(row=6)
 
     def init_load_params_button(self):
         """

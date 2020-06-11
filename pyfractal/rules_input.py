@@ -1,6 +1,6 @@
 """Class to handle input and fetching rules from GUI"""
 from tkinter import Frame, Button, Entry, BooleanVar, \
-    LEFT, END, Checkbutton, Tk, Canvas, Radiobutton, Label, W
+    LEFT, END, LAST, Checkbutton, Tk, Canvas, Radiobutton, Label, W
 import re
 from math import cos, sin
 from math import pi as PI
@@ -232,7 +232,7 @@ class RulesInput():
         curve = self.form_base_curve(extracted_rules)
         self.preview_canvas.delete("all")
         if len(curve) > 1:  # draw only if there are more than one points
-            self.preview_canvas.create_line(curve)
+            self.preview_canvas.create_line(curve, arrow=LAST)
 
     def init_info_labels(self):
         """

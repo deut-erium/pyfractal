@@ -30,7 +30,8 @@ class Parameters():
             "btn_clear_canvas": None,
             "btn_draw": None,
             "btn_save_params": None,
-            "chkbtn_round_corners": None
+            "chkbtn_round_corners": None,
+            "chkbtn_color": None
         }
         self.entries = {
             "ent_recursion_depth": None,
@@ -41,7 +42,8 @@ class Parameters():
             "lbl_base_length": None
         }
         self.vars = {
-            "round_corners": None
+            "round_corners": None,
+            "fill_color": None
         }
         self.init_saveas_button()
         self.init_clear_canvas_button()
@@ -51,6 +53,7 @@ class Parameters():
         self.init_save_curve_params_button()
         self.init_load_params_button()
         self.init_round_curve_checkbox()
+        self.init_fill_color_checkbox()
         self.init_rules_frame()
 
     def init_saveas_button(self):
@@ -165,8 +168,9 @@ class Parameters():
             base_length = self.get_base_length()
             self.parent_class.classes["fractal"].set_base_length(base_length)
             is_curved = self.vars["round_corners"].get()
+            fill_color = self.vars["fill_color"].get()
             self.parent_class.classes["fractal"].draw_fractal(
-                recursion_depth, is_curved)
+                recursion_depth, is_curved, fill_color)
 
         self.buttons["btn_draw"] = Button(
             self.frame, width=14, text="Draw Fractal", command=draw)
@@ -204,7 +208,21 @@ class Parameters():
         self.buttons["chkbtn_round_corners"] = Checkbutton(
             self.frame, text='round corners',
             var=self.vars["round_corners"])
-        self.buttons["chkbtn_round_corners"].grid(row=6)
+        self.buttons["chkbtn_round_corners"].grid(row=6, column=0)
+
+    def init_fill_color_checkbox(self):
+        """
+        Initializes checkbox to fill the color in fractal while drawing
+
+        Although the fractal is open curve most of the instances, it will
+        fill color by making it closed by connecting starting and ending
+        points
+        """
+        self.vars["fill_color"] = BooleanVar(self.frame)
+        self.buttons["chkbtn_color"] = Checkbutton(
+            self.frame, text='fill color',
+            var=self.vars["fill_color"])
+        self.buttons["chkbtn_color"].grid(row=6, column=1)
 
     def init_load_params_button(self):
         """

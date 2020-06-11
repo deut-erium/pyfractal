@@ -219,7 +219,11 @@ class FastFractal():
         rounded_curve.append(curve[-1])  # retain the last point
         return rounded_curve
 
-    def draw_fractal(self, recursion_depth=None, round_corners=False):
+    def draw_fractal(
+            self,
+            recursion_depth=None,
+            round_corners=False,
+            fill_color=False):
         """
         Draw the fractal curve on the canvas of the parent class
         """
@@ -231,6 +235,9 @@ class FastFractal():
             if round_corners:
                 curve_to_draw = self.round_corners(
                     self.remove_repeated_points(curve_to_draw))
-            self.parent.canvas.create_line(curve_to_draw)
+            if fill_color:
+                self.parent.canvas.create_polygon(curve_to_draw, fill="black")
+            else:
+                self.parent.canvas.create_line(curve_to_draw)
         else:
             self.parent.canvas.bell()  # ring bell to indicate wrong action

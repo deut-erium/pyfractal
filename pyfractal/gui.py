@@ -61,7 +61,8 @@ class GUI():
             master=self.window, width=400, height=400)
         self.canvas = Canvas(
             master=self.frames["canvas"],
-            scrollregion=(0, 0, max_width, max_height))
+            scrollregion=(0, 0, max_width, max_height),
+            bg="white")
         h_scrl_bar = Scrollbar(self.frames["canvas"], orient=HORIZONTAL)
         h_scrl_bar.pack(side=BOTTOM, fill=X)
         h_scrl_bar.config(command=self.canvas.xview)

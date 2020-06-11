@@ -6,6 +6,7 @@ This project is aimed to provide a simple gui for drawing fractals so that anyon
 
 ## Table of contents
 * [Features](#features)
+* [Samples/Download](#samples)
 * [Setup](#setup)
 * [Usage](#usage)
 * [Libraries Used](#libraries)
@@ -31,6 +32,13 @@ Perhaps I made a small script which would draw fractals pretty neatly but it had
 * Drawing multiple fractals at once on a canvas
 * Appending rules of several fractals (more people may consider it a bug, but i consider it a feature)
 * Degree and radian support
+
+## <a name="samples"></a>Samples/Download
+A few of the fractal images are available to download/view in [fractal_images](fractal_images) in png and svg formats
+> NOTE: Pngs may get **HUGE** in size, deter from using them 
+![](https://github.com/deut-erium/pyfractal/blob/master/fractal_images/svgs/5_curvePuppy.svg?raw=1)
+
+![](https://github.com/deut-erium/pyfractal/blob/master/fractal_images/svgs/19_curve2_FractalFlower.svg?raw=1)
 
 ## <a name="setup"></a>Setup
 ```pip3 install pyfractal```

@@ -101,37 +101,37 @@ Feel free to contribute/clone/[Issue](https://github.com/deut-erium/pyfractal/is
 
 ## <a name="todo"></a>TODO 
 This is probably a VERY long list but here are key TODO's :-
-* **Curved Edges** 
-  * Adding option to curve the corners/edges to make the fractal smoother and to see more clearly the sweep of the fractal
-  * Adding splines instead of boring straight lines
-* Conversion of degree to radians in input feild on pressing radio buttons (not really important but OK)
-* Help Pages
+- [x] **Curved Edges** 
+  - [x] Adding option to curve the corners/edges to make the fractal smoother and to see more clearly the sweep of the fractal
+  - [ ] Adding splines instead of boring straight lines
+- [ ] Conversion of degree to radians in input feild on pressing radio buttons (not really important but OK)
+- [ ] Help Pages
   * No amount of help pages is sufficient
-* Menubar
+- [ ] Menubar
   * Adding a Menubar for easy access to resources and help pages
-* More graphic options
-  * Color support for lines and fills
-  * Background color/image specification 
-* Animations
-  * Animating the turtle (why?? wasn't this the main purpose behind building this project) to momentarily enjoy the chaos caused by simple rules of life  
-* More types of fractals
-  * Support for [L systems](https://en.wikipedia.org/wiki/L-system)
-  * Support for General [IFS](https://en.wikipedia.org/wiki/Iterated_function_system)
-  * A more non-math peep friendly system?
-* Grid based input
+- [x] More graphic options
+  - [x] Color support for lines and fills
+  - [x] Background color/image specification 
+- [ ] Animations
+  - [ ] Animating the turtle (why?? wasn't this the main purpose behind building this project) to momentarily enjoy the chaos caused by simple rules of life  
+- [ ] More types of fractals
+  - [ ] Support for [L systems](https://en.wikipedia.org/wiki/L-system)
+  - [ ] Support for General [IFS](https://en.wikipedia.org/wiki/Iterated_function_system)
+  - [ ] A more non-math peep friendly system?
+- [ ] Grid based input
 As described [here](http://www.fractalcurves.com/Taxonomy.html)
-  * Square grid
-  * Triangular grid
-  * A general lattice maybe?
-  * A general 3 dimensional lattice (okay I admit I am being too optimistic)
-* Fractal type specifier
-  * Automatically specify self-avoiding, self-contacting(edge/vertex), self-crossing types from the base rules
-  * Dimension calculator
-* Fractal tile extraction
-  * Extract tiles from tile-able fractals
-* More toooooools
-  * Clone fractals
-  * Drag and drop items around on the canvas
+  - [ ] Square grid
+  - [ ] Triangular grid
+  - [ ] A general lattice maybe?
+  - [ ] A general 3 dimensional lattice (okay I admit I am being too optimistic)
+- [ ] Fractal type specifier
+  - [ ] Automatically specify self-avoiding, self-contacting(edge/vertex), self-crossing types from the base rules
+  - [ ] Dimension calculator
+- [ ] Fractal tile extraction
+  - [ ] Extract tiles from tile-able fractals
+- [ ] More toooooools
+  - [ ] Clone fractals
+  - [ ] Drag and drop items around on the canvas
   
 ## <a name="sources"></a>Sources
 The following links are pretty useful and helpful in learning more about fractals
